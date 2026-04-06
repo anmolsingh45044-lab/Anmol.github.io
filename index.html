@@ -6,9 +6,9 @@
 <title>CodeSolve — Learn Programming Easily</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
 <style>
-/* ═══════════════════════════════
-   SHARED TOKENS
-═══════════════════════════════ */
+/* ═══════════════════════════
+   TOKENS
+═══════════════════════════ */
 :root {
   --bg: #0b0c10;
   --surface: #13141a;
@@ -24,367 +24,507 @@
   --border-solid: #2a2c3a;
   --sidebar-w: 220px;
 }
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body { background: var(--bg); color: var(--text); font-family: 'Syne', sans-serif; overflow-x: hidden; }
- 
-/* noise overlay */
-body::before {
-  content: ''; position: fixed; inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
-  pointer-events: none; z-index: 9999; opacity: 0.5;
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;overflow-x:hidden;}
+
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:9999;opacity:.5;
 }
- 
-/* ═══════════════════════════════
-   VIEWS: landing / login / dashboard
-═══════════════════════════════ */
-.view { display: none; }
-.view.active { display: block; }
-#view-dashboard { display: none; }
-#view-dashboard.active { display: flex; }
- 
-/* ═══════════════════════════════
+
+/* ═══════════════════════════
+   HIDE ALL CHECKBOXES/RADIOS
+═══════════════════════════ */
+input[type=checkbox],input[type=radio]{display:none;}
+
+/* ═══════════════════════════
+   LANDING / DASHBOARD TOGGLE
+═══════════════════════════ */
+/* Default: landing visible, dashboard hidden */
+#toggle-dash:checked ~ #view-landing { display: none; }
+#toggle-dash:checked ~ #view-dashboard { display: flex; }
+#view-dashboard { display: none; min-height:100vh; }
+#view-landing { display: block; }
+
+/* ═══════════════════════════
    LANDING — NAVBAR
-═══════════════════════════════ */
-.site-nav {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 1.2rem 3rem; border-bottom: 1px solid var(--border-solid);
-  background: rgba(11,12,16,0.85); backdrop-filter: blur(12px);
-  position: sticky; top: 0; z-index: 100;
+═══════════════════════════ */
+.site-nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1.2rem 3rem;border-bottom:1px solid var(--border-solid);
+  background:rgba(11,12,16,.85);backdrop-filter:blur(12px);
+  position:sticky;top:0;z-index:100;
 }
-.logo-text { font-family: 'Space Mono', monospace; font-size: 1.3rem; font-weight: 700; color: var(--accent); letter-spacing: -1px; cursor: pointer; }
-.logo-text span { color: var(--accent3); }
-.site-nav ul { list-style: none; display: flex; gap: 2.2rem; align-items: center; }
-.site-nav ul a { text-decoration: none; color: var(--muted); font-size: .9rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; transition: color .2s; }
-.site-nav ul a:hover { color: var(--accent); }
-.nav-cta { background: var(--accent) !important; color: var(--bg) !important; padding: .5rem 1.2rem; border-radius: 4px; cursor: pointer; }
-.nav-cta:hover { opacity: .85 !important; }
- 
-/* ═══════════════════════════════
+.logo-text{font-family:'Space Mono',monospace;font-size:1.3rem;font-weight:700;color:var(--accent);letter-spacing:-1px;}
+.logo-text span{color:var(--accent3);}
+.site-nav ul{list-style:none;display:flex;gap:2.2rem;align-items:center;}
+.site-nav ul a{text-decoration:none;color:var(--muted);font-size:.9rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;transition:color .2s;}
+.site-nav ul a:hover{color:var(--accent);}
+.nav-cta{background:var(--accent)!important;color:var(--bg)!important;padding:.5rem 1.2rem;border-radius:4px;}
+.nav-cta:hover{opacity:.85!important;}
+
+/* label as button */
+label.btn-label{cursor:pointer;}
+label.nav-cta-label{
+  background:var(--accent);color:var(--bg);
+  padding:.5rem 1.2rem;border-radius:4px;
+  font-weight:700;font-size:.9rem;letter-spacing:.08em;text-transform:uppercase;
+  transition:opacity .2s;cursor:pointer;
+}
+label.nav-cta-label:hover{opacity:.85;}
+
+/* ═══════════════════════════
    LANDING — HERO
-═══════════════════════════════ */
-.hero {
-  min-height: 92vh; display: flex; flex-direction: column;
-  align-items: center; justify-content: center; text-align: center;
-  padding: 4rem 2rem; position: relative; overflow: hidden;
+═══════════════════════════ */
+.hero{
+  min-height:92vh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;
+  padding:4rem 2rem;position:relative;overflow:hidden;
 }
-.hero::before, .hero::after {
-  content: ''; position: absolute; border-radius: 50%;
-  filter: blur(80px); opacity: .18; animation: float 8s ease-in-out infinite;
+.hero::before,.hero::after{
+  content:'';position:absolute;border-radius:50%;
+  filter:blur(80px);opacity:.18;animation:float 8s ease-in-out infinite;
 }
-.hero::before { width: 500px; height: 500px; background: var(--accent); top: -100px; left: -100px; }
-.hero::after  { width: 400px; height: 400px; background: var(--accent2); bottom: -80px; right: -80px; animation-delay: -4s; }
-@keyframes float { 0%,100%{transform:translateY(0) scale(1);} 50%{transform:translateY(-30px) scale(1.05);} }
- 
-.eyebrow { font-family:'Space Mono',monospace; font-size:.8rem; letter-spacing:.25em; text-transform:uppercase; color:var(--accent3); margin-bottom:1.5rem; opacity:0; animation:fadeUp .6s ease forwards .2s; }
-.hero h1 { font-size:clamp(3rem,8vw,6rem); font-weight:800; line-height:1.05; letter-spacing:-2px; margin-bottom:1.5rem; opacity:0; animation:fadeUp .6s ease forwards .4s; }
-.hero h1 em { font-style:normal; color:var(--accent); position:relative; }
-.hero h1 em::after { content:''; position:absolute; bottom:4px; left:0; right:0; height:4px; background:var(--accent); border-radius:2px; opacity:.4; }
-.hero p { font-size:1.15rem; color:var(--muted); max-width:520px; line-height:1.7; margin-bottom:2.5rem; opacity:0; animation:fadeUp .6s ease forwards .6s; }
-.hero-btns { display:flex; gap:1rem; flex-wrap:wrap; justify-content:center; opacity:0; animation:fadeUp .6s ease forwards .8s; }
-@keyframes fadeUp { from{opacity:0;transform:translateY(24px);} to{opacity:1;transform:translateY(0);} }
- 
-.btn-primary { background:var(--accent); color:var(--bg); padding:.85rem 2.2rem; border-radius:6px; text-decoration:none; font-weight:800; font-size:1rem; transition:transform .2s,box-shadow .2s; box-shadow:0 0 24px rgba(247,201,72,.3); cursor:pointer; border:none; font-family:'Syne',sans-serif; }
-.btn-primary:hover { transform:translateY(-2px); box-shadow:0 0 40px rgba(247,201,72,.5); }
-.btn-outline { border:2px solid var(--border-solid); color:var(--text); padding:.85rem 2.2rem; border-radius:6px; text-decoration:none; font-weight:700; font-size:1rem; transition:border-color .2s,color .2s; background:none; cursor:pointer; font-family:'Syne',sans-serif; }
-.btn-outline:hover { border-color:var(--accent3); color:var(--accent3); }
- 
-/* ═══════════════════════════════
-   LANDING — TICKER
-═══════════════════════════════ */
-.ticker { background:var(--accent); color:var(--bg); overflow:hidden; white-space:nowrap; padding:.6rem 0; font-family:'Space Mono',monospace; font-size:.78rem; font-weight:700; letter-spacing:.08em; }
-.ticker-inner { display:inline-block; animation:ticker 22s linear infinite; }
-@keyframes ticker { from{transform:translateX(0);} to{transform:translateX(-50%);} }
- 
-/* ═══════════════════════════════
-   LANDING — SECTIONS
-═══════════════════════════════ */
-.section { padding:6rem 3rem; max-width:1200px; margin:0 auto; }
-.section-label { font-family:'Space Mono',monospace; font-size:.75rem; letter-spacing:.25em; text-transform:uppercase; color:var(--accent2); margin-bottom:1rem; }
-.section-title { font-size:clamp(2rem,4vw,3rem); font-weight:800; letter-spacing:-1px; margin-bottom:3rem; line-height:1.1; }
-.courses-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:1.5rem; }
-.course-card { background:var(--card); border:1px solid var(--border-solid); border-radius:12px; overflow:hidden; transition:transform .25s,border-color .25s,box-shadow .25s; text-decoration:none; color:var(--text); display:block; cursor:pointer; }
-.course-card:hover { transform:translateY(-6px); border-color:var(--accent); box-shadow:0 12px 40px rgba(247,201,72,.12); }
-.thumb-java   { background:linear-gradient(135deg,#1a1c26,#2d1f3d); }
-.thumb-python { background:linear-gradient(135deg,#1a261c,#1f3d2d); }
-.thumb-web    { background:linear-gradient(135deg,#261a1a,#3d1f1f); }
-.thumb-icon { height:180px; display:flex; align-items:center; justify-content:center; font-size:4rem; }
-.card-body { padding:1.4rem; }
-.card-tag { font-family:'Space Mono',monospace; font-size:.7rem; letter-spacing:.15em; text-transform:uppercase; color:var(--accent3); margin-bottom:.5rem; }
-.card-title { font-size:1.2rem; font-weight:700; margin-bottom:.5rem; }
-.card-desc { font-size:.88rem; color:var(--muted); line-height:1.6; }
-.card-arrow { display:inline-flex; align-items:center; gap:.4rem; margin-top:1rem; font-size:.85rem; font-weight:700; color:var(--accent); }
-.why-section { background:var(--surface); border-top:1px solid var(--border-solid); border-bottom:1px solid var(--border-solid); }
-.why-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:2rem; }
-.why-item { display:flex; flex-direction:column; gap:.8rem; }
-.why-icon { font-size:2rem; width:56px; height:56px; background:var(--card); border:1px solid var(--border-solid); border-radius:10px; display:flex; align-items:center; justify-content:center; }
-.why-item h3 { font-size:1rem; font-weight:700; }
-.why-item p  { font-size:.88rem; color:var(--muted); line-height:1.6; }
- 
-/* ═══════════════════════════════
-   LANDING — FOOTER
-═══════════════════════════════ */
-site-footer, .site-footer {
-  background:var(--bg); border-top:1px solid var(--border-solid);
-  padding:2.5rem 3rem; display:flex; align-items:center;
-  justify-content:space-between; flex-wrap:wrap; gap:1rem;
+.hero::before{width:500px;height:500px;background:var(--accent);top:-100px;left:-100px;}
+.hero::after{width:400px;height:400px;background:var(--accent2);bottom:-80px;right:-80px;animation-delay:-4s;}
+@keyframes float{0%,100%{transform:translateY(0) scale(1);}50%{transform:translateY(-30px) scale(1.05);}}
+
+.eyebrow{font-family:'Space Mono',monospace;font-size:.8rem;letter-spacing:.25em;text-transform:uppercase;color:var(--accent3);margin-bottom:1.5rem;opacity:0;animation:fadeUp .6s ease forwards .2s;}
+.hero h1{font-size:clamp(3rem,8vw,6rem);font-weight:800;line-height:1.05;letter-spacing:-2px;margin-bottom:1.5rem;opacity:0;animation:fadeUp .6s ease forwards .4s;}
+.hero h1 em{font-style:normal;color:var(--accent);position:relative;}
+.hero h1 em::after{content:'';position:absolute;bottom:4px;left:0;right:0;height:4px;background:var(--accent);border-radius:2px;opacity:.4;}
+.hero p{font-size:1.15rem;color:var(--muted);max-width:520px;line-height:1.7;margin-bottom:2.5rem;opacity:0;animation:fadeUp .6s ease forwards .6s;}
+.hero-btns{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;opacity:0;animation:fadeUp .6s ease forwards .8s;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+
+.btn-primary{background:var(--accent);color:var(--bg);padding:.85rem 2.2rem;border-radius:6px;text-decoration:none;font-weight:800;font-size:1rem;transition:transform .2s,box-shadow .2s;box-shadow:0 0 24px rgba(247,201,72,.3);cursor:pointer;border:none;font-family:'Syne',sans-serif;display:inline-block;}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 0 40px rgba(247,201,72,.5);}
+.btn-outline{border:2px solid var(--border-solid);color:var(--text);padding:.85rem 2.2rem;border-radius:6px;text-decoration:none;font-weight:700;font-size:1rem;transition:border-color .2s,color .2s;background:none;cursor:pointer;font-family:'Syne',sans-serif;display:inline-block;}
+.btn-outline:hover{border-color:var(--accent3);color:var(--accent3);}
+
+/* ═══════════════════════════
+   TICKER
+═══════════════════════════ */
+.ticker{background:var(--accent);color:var(--bg);overflow:hidden;white-space:nowrap;padding:.6rem 0;font-family:'Space Mono',monospace;font-size:.78rem;font-weight:700;letter-spacing:.08em;}
+.ticker-inner{display:inline-block;animation:ticker 22s linear infinite;}
+@keyframes ticker{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+/* ═══════════════════════════
+   SECTIONS
+═══════════════════════════ */
+.section{padding:6rem 3rem;max-width:1200px;margin:0 auto;}
+.section-label{font-family:'Space Mono',monospace;font-size:.75rem;letter-spacing:.25em;text-transform:uppercase;color:var(--accent2);margin-bottom:1rem;}
+.section-title{font-size:clamp(2rem,4vw,3rem);font-weight:800;letter-spacing:-1px;margin-bottom:3rem;line-height:1.1;}
+.courses-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem;}
+.course-card{background:var(--card);border:1px solid var(--border-solid);border-radius:12px;overflow:hidden;transition:transform .25s,border-color .25s,box-shadow .25s;text-decoration:none;color:var(--text);display:block;cursor:pointer;}
+.course-card:hover{transform:translateY(-6px);border-color:var(--accent);box-shadow:0 12px 40px rgba(247,201,72,.12);}
+.thumb-java{background:linear-gradient(135deg,#1a1c26,#2d1f3d);}
+.thumb-python{background:linear-gradient(135deg,#1a261c,#1f3d2d);}
+.thumb-web{background:linear-gradient(135deg,#261a1a,#3d1f1f);}
+.thumb-icon{height:180px;display:flex;align-items:center;justify-content:center;font-size:4rem;}
+.card-body{padding:1.4rem;}
+.card-tag{font-family:'Space Mono',monospace;font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:var(--accent3);margin-bottom:.5rem;}
+.card-title{font-size:1.2rem;font-weight:700;margin-bottom:.5rem;}
+.card-desc{font-size:.88rem;color:var(--muted);line-height:1.6;}
+.card-arrow{display:inline-flex;align-items:center;gap:.4rem;margin-top:1rem;font-size:.85rem;font-weight:700;color:var(--accent);}
+
+.why-section{background:var(--surface);border-top:1px solid var(--border-solid);border-bottom:1px solid var(--border-solid);}
+.why-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:2rem;}
+.why-item{display:flex;flex-direction:column;gap:.8rem;}
+.why-icon{font-size:2rem;width:56px;height:56px;background:var(--card);border:1px solid var(--border-solid);border-radius:10px;display:flex;align-items:center;justify-content:center;}
+.why-item h3{font-size:1rem;font-weight:700;}
+.why-item p{font-size:.88rem;color:var(--muted);line-height:1.6;}
+
+.site-footer{
+  background:var(--bg);border-top:1px solid var(--border-solid);
+  padding:2.5rem 3rem;display:flex;align-items:center;
+  justify-content:space-between;flex-wrap:wrap;gap:1rem;
 }
-.site-footer .logo-text { font-size:1rem; }
-.site-footer ul { list-style:none; display:flex; gap:1.5rem; }
-.site-footer ul a { text-decoration:none; color:var(--muted); font-size:.85rem; font-weight:700; transition:color .2s; }
-.site-footer ul a:hover { color:var(--accent); }
-.site-footer p { font-family:'Space Mono',monospace; font-size:.75rem; color:var(--muted); }
- 
-/* ═══════════════════════════════
-   LOGIN MODAL (overlay)
-═══════════════════════════════ */
-.login-overlay {
-  display:none; position:fixed; inset:0;
-  background:rgba(0,0,0,.75); backdrop-filter:blur(6px);
-  z-index:500; align-items:center; justify-content:center;
+.site-footer .logo-text{font-size:1rem;}
+.site-footer ul{list-style:none;display:flex;gap:1.5rem;}
+.site-footer ul a{text-decoration:none;color:var(--muted);font-size:.85rem;font-weight:700;transition:color .2s;}
+.site-footer ul a:hover{color:var(--accent);}
+.site-footer p{font-family:'Space Mono',monospace;font-size:.75rem;color:var(--muted);}
+
+/* ═══════════════════════════
+   LOGIN MODAL (CSS-only)
+═══════════════════════════ */
+/* The login overlay is triggered by #toggle-login checkbox */
+.login-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,.75);backdrop-filter:blur(6px);
+  z-index:500;align-items:center;justify-content:center;
 }
-.login-overlay.open { display:flex; }
-.login-box {
-  background:var(--card); border:1px solid var(--border); border-radius:20px;
-  padding:2.5rem 2rem; width:380px; max-width:95vw;
-  animation:fadeUp .35s ease;
+#toggle-login:checked ~ #view-landing .login-overlay { display: flex; }
+/* if dashboard is shown, don't show login overlay from landing */
+#toggle-dash:checked ~ #view-landing .login-overlay { display: none; }
+
+.login-box{
+  background:var(--card);border:1px solid var(--border);border-radius:20px;
+  padding:2.5rem 2rem;width:380px;max-width:95vw;
+  animation:fadeUp .35s ease;position:relative;
 }
-.login-box h2 { font-size:1.5rem; font-weight:800; margin-bottom:.4rem; }
-.login-box .sub { font-size:.85rem; color:var(--muted); margin-bottom:2rem; }
-.login-tabs { display:flex; gap:.5rem; margin-bottom:1.5rem; }
-.login-tab { flex:1; padding:.55rem; border-radius:8px; border:1px solid var(--border); background:none; color:var(--muted); font-family:'Syne',sans-serif; font-weight:700; font-size:.85rem; cursor:pointer; transition:all .2s; }
-.login-tab.active { background:var(--accent); border-color:var(--accent); color:var(--bg); }
-.lform-row { margin-bottom:1rem; }
-.lform-row label { display:block; font-size:.72rem; color:var(--muted); margin-bottom:.4rem; letter-spacing:.08em; text-transform:uppercase; font-family:'Space Mono',monospace; }
-.lform-row input { width:100%; background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:.65rem 1rem; color:var(--text); font-size:.9rem; font-family:'Syne',sans-serif; outline:none; transition:border .2s; }
-.lform-row input:focus { border-color:var(--accent); }
-.lform-row input::placeholder { color:var(--muted); }
-.login-submit { width:100%; background:var(--accent); border:none; border-radius:8px; padding:.8rem; color:var(--bg); font-family:'Syne',sans-serif; font-weight:800; font-size:1rem; cursor:pointer; margin-top:.5rem; transition:opacity .2s; }
-.login-submit:hover { opacity:.85; }
-.login-hint { font-size:.75rem; color:var(--muted); text-align:center; margin-top:1rem; font-family:'Space Mono',monospace; }
-.login-close { position:absolute; top:1rem; right:1rem; background:none; border:none; color:var(--muted); font-size:1.4rem; cursor:pointer; line-height:1; }
-.login-close:hover { color:var(--text); }
-.login-box { position:relative; }
- 
-/* ═══════════════════════════════
+.login-box h2{font-size:1.5rem;font-weight:800;margin-bottom:.4rem;}
+.login-box .sub{font-size:.85rem;color:var(--muted);margin-bottom:2rem;}
+.login-close-label{
+  position:absolute;top:1rem;right:1rem;
+  background:none;border:none;color:var(--muted);font-size:1.4rem;cursor:pointer;line-height:1;
+}
+.login-close-label:hover{color:var(--text);}
+.lform-row{margin-bottom:1rem;}
+.lform-row label.field-label{display:block;font-size:.72rem;color:var(--muted);margin-bottom:.4rem;letter-spacing:.08em;text-transform:uppercase;font-family:'Space Mono',monospace;}
+.lform-row input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.65rem 1rem;color:var(--text);font-size:.9rem;font-family:'Syne',sans-serif;outline:none;transition:border .2s;}
+.lform-row input:focus{border-color:var(--accent);}
+.lform-row input::placeholder{color:var(--muted);}
+.login-submit-label{
+  display:block;width:100%;background:var(--accent);border-radius:8px;padding:.8rem;
+  color:var(--bg);font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;
+  cursor:pointer;margin-top:.5rem;text-align:center;transition:opacity .2s;
+}
+.login-submit-label:hover{opacity:.85;}
+.login-hint{font-size:.75rem;color:var(--muted);text-align:center;margin-top:1rem;font-family:'Space Mono',monospace;}
+
+/* ═══════════════════════════
    DASHBOARD LAYOUT
-═══════════════════════════════ */
-#view-dashboard { min-height:100vh; }
- 
-.sidebar {
-  width:var(--sidebar-w); background:var(--surface); border-right:1px solid var(--border);
-  display:flex; flex-direction:column; position:fixed; top:0; left:0; height:100vh; z-index:50;
-  transform:translateX(-100%); transition:transform .3s;
+═══════════════════════════ */
+.sidebar{
+  width:var(--sidebar-w);background:var(--surface);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:50;
 }
-.sidebar.open { transform:translateX(0); }
-.sidebar-logo { padding:1.4rem 1.2rem; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
-.sidebar-logo .logo-text { font-size:1rem; }
-.sidebar-back { background:none; border:none; color:var(--muted); font-size:.78rem; cursor:pointer; font-family:'Space Mono',monospace; transition:color .2s; }
-.sidebar-back:hover { color:var(--accent2); }
-.sidebar-nav { flex:1; padding:1rem 0; overflow-y:auto; }
-.nav-section { font-size:.65rem; letter-spacing:.15em; text-transform:uppercase; color:var(--muted); padding:.8rem 1.2rem .4rem; font-family:'Space Mono',monospace; }
-.nav-item { display:flex; align-items:center; gap:10px; padding:.65rem 1.2rem; cursor:pointer; transition:background .15s,color .15s; font-size:.88rem; font-weight:700; color:var(--muted); border-left:3px solid transparent; }
-.nav-item:hover { background:rgba(255,255,255,.04); color:var(--text); }
-.nav-item.active { background:rgba(247,201,72,.07); color:var(--accent); border-left-color:var(--accent); }
-.nav-item .icon { font-size:16px; width:20px; text-align:center; }
-.sidebar-footer { padding:1rem 1.2rem; border-top:1px solid var(--border); font-size:.72rem; color:var(--muted); font-family:'Space Mono',monospace; }
- 
-.db-main { margin-left:var(--sidebar-w); flex:1; display:flex; flex-direction:column; min-height:100vh; }
-.topbar { background:var(--surface); border-bottom:1px solid var(--border); padding:.9rem 2rem; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:40; }
-.topbar-title { font-size:1rem; font-weight:800; letter-spacing:-.5px; }
-.topbar-right { display:flex; align-items:center; gap:1rem; }
-.topbar-search { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:.45rem .9rem; font-size:.82rem; color:var(--text); font-family:'Syne',sans-serif; width:200px; outline:none; transition:border .2s; }
-.topbar-search:focus { border-color:var(--accent); }
-.topbar-search::placeholder { color:var(--muted); }
-.db-avatar { width:34px; height:34px; border-radius:50%; background:linear-gradient(135deg,var(--accent),var(--accent2)); display:flex; align-items:center; justify-content:center; font-size:.72rem; font-weight:800; color:#0b0c10; cursor:pointer; }
-.db-content { padding:2rem; flex:1; }
- 
-/* PAGES */
-.page { display:none; }
-.page.active { display:block; }
- 
-/* STATS */
-.stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-bottom:2rem; }
-.stat-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:1.2rem; position:relative; overflow:hidden; }
-.stat-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; }
-.stat-card.s1::before{background:var(--accent);} .stat-card.s2::before{background:var(--accent3);} .stat-card.s3::before{background:var(--accent2);} .stat-card.s4::before{background:var(--accent4);}
-.stat-label { font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); font-family:'Space Mono',monospace; margin-bottom:.5rem; }
-.stat-val { font-size:2rem; font-weight:800; letter-spacing:-1px; margin-bottom:.2rem; }
-.stat-sub { font-size:.75rem; color:var(--muted); }
- 
-/* HEADINGS / BUTTONS */
-.sec-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.2rem; }
-.sec-head h2 { font-size:1.1rem; font-weight:800; letter-spacing:-.5px; }
-.btn { background:transparent; border:1px solid var(--border); color:var(--text); padding:.45rem 1rem; border-radius:8px; font-size:.8rem; font-weight:700; cursor:pointer; font-family:'Syne',sans-serif; transition:all .2s; }
-.btn:hover { border-color:var(--accent); color:var(--accent); }
-.btn-accent { background:var(--accent); border-color:var(--accent); color:#0b0c10; }
-.btn-accent:hover { opacity:.85; color:#0b0c10; }
- 
-/* TABLE */
-.table-wrap { background:var(--card); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
-table { width:100%; border-collapse:collapse; font-size:.85rem; }
-thead th { padding:.9rem 1.2rem; text-align:left; font-size:.7rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); font-family:'Space Mono',monospace; border-bottom:1px solid var(--border); background:var(--card2); }
-tbody tr { border-bottom:1px solid var(--border); transition:background .15s; cursor:pointer; }
-tbody tr:last-child { border-bottom:none; }
-tbody tr:hover { background:rgba(255,255,255,.03); }
-tbody td { padding:.85rem 1.2rem; color:var(--text); }
-.badge { display:inline-block; padding:.2rem .65rem; border-radius:20px; font-size:.72rem; font-weight:700; font-family:'Space Mono',monospace; }
-.badge-green{background:rgba(108,247,197,.12);color:var(--accent3);} .badge-yellow{background:rgba(247,201,72,.12);color:var(--accent);} .badge-red{background:rgba(255,107,107,.12);color:var(--accent2);} .badge-blue{background:rgba(124,159,255,.12);color:var(--accent4);}
-.avatar-sm { width:30px; height:30px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:.62rem; font-weight:800; color:#0b0c10; margin-right:8px; flex-shrink:0; vertical-align:middle; }
- 
-/* MODAL */
-.modal-bg { display:none; position:fixed; inset:0; background:rgba(0,0,0,.7); z-index:200; align-items:center; justify-content:center; }
-.modal-bg.open { display:flex; }
-.modal { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:2rem; width:480px; max-width:95vw; max-height:90vh; overflow-y:auto; }
-.modal h3 { font-size:1.1rem; font-weight:800; margin-bottom:1.4rem; }
-.form-row { margin-bottom:1rem; }
-.form-row label { display:block; font-size:.78rem; color:var(--muted); margin-bottom:.4rem; letter-spacing:.08em; text-transform:uppercase; font-family:'Space Mono',monospace; }
-.form-row input, .form-row select { width:100%; background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:.6rem .9rem; color:var(--text); font-size:.88rem; font-family:'Syne',sans-serif; outline:none; transition:border .2s; }
-.form-row input:focus, .form-row select:focus { border-color:var(--accent); }
-.form-row select option { background:var(--card); }
-.form-2col { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
-.modal-btns { display:flex; gap:.8rem; justify-content:flex-end; margin-top:1.5rem; }
- 
-/* RESOURCES */
-.resources-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:1.2rem; }
-.res-card { background:var(--card); border:1px solid var(--border); border-radius:12px; overflow:hidden; text-decoration:none; color:var(--text); display:block; transition:transform .2s,border-color .2s; }
-.res-card:hover { transform:translateY(-4px); border-color:var(--accent); }
-.res-thumb { height:140px; display:flex; align-items:center; justify-content:center; font-size:2.5rem; position:relative; }
-.res-body { padding:1rem; }
-.res-tag { font-family:'Space Mono',monospace; font-size:.68rem; letter-spacing:.12em; text-transform:uppercase; margin-bottom:.4rem; }
-.res-title { font-size:.95rem; font-weight:700; margin-bottom:.3rem; }
-.res-desc { font-size:.8rem; color:var(--muted); line-height:1.5; }
-.res-link { display:inline-flex; align-items:center; gap:.3rem; margin-top:.7rem; font-size:.78rem; font-weight:700; color:var(--accent); }
- 
-/* VIDEO MODAL */
-.video-modal-bg { display:none; position:fixed; inset:0; background:rgba(0,0,0,.85); z-index:300; align-items:center; justify-content:center; }
-.video-modal-bg.open { display:flex; }
-.video-modal { background:var(--card); border-radius:16px; overflow:hidden; width:800px; max-width:95vw; }
-.video-modal iframe { width:100%; aspect-ratio:16/9; border:none; display:block; }
-.video-modal-head { display:flex; align-items:center; justify-content:space-between; padding:1rem 1.2rem; }
-.video-modal-head h4 { font-size:.95rem; font-weight:800; }
-.close-btn { background:none; border:none; color:var(--muted); font-size:1.3rem; cursor:pointer; line-height:1; }
-.close-btn:hover { color:var(--text); }
- 
-/* CHATBOT */
-.chat-wrap { display:grid; grid-template-columns:1fr 340px; gap:1.5rem; height:calc(100vh - 160px); }
-.chat-main { background:var(--card); border:1px solid var(--border); border-radius:12px; display:flex; flex-direction:column; overflow:hidden; }
-.chat-header { padding:1rem 1.2rem; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:10px; }
-.chat-ai-dot { width:10px; height:10px; border-radius:50%; background:var(--accent3); animation:pulse 2s infinite; }
-@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:.4;} }
-.chat-header h3 { font-size:.9rem; font-weight:800; }
-.chat-header span { font-size:.75rem; color:var(--accent3); }
-.chat-msgs { flex:1; overflow-y:auto; padding:1.2rem; display:flex; flex-direction:column; gap:1rem; }
-.msg { max-width:80%; display:flex; flex-direction:column; gap:.3rem; }
-.msg.user { align-self:flex-end; align-items:flex-end; }
-.msg.ai { align-self:flex-start; align-items:flex-start; }
-.msg-bubble { padding:.75rem 1rem; border-radius:12px; font-size:.85rem; line-height:1.6; }
-.msg.user .msg-bubble { background:var(--accent); color:#0b0c10; border-bottom-right-radius:4px; }
-.msg.ai .msg-bubble { background:var(--card2); border:1px solid var(--border); border-bottom-left-radius:4px; }
-.msg-time { font-size:.68rem; color:var(--muted); font-family:'Space Mono',monospace; }
-.chat-input-row { padding:1rem; border-top:1px solid var(--border); display:flex; gap:.7rem; align-items:flex-end; }
-.chat-input { flex:1; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:.7rem 1rem; color:var(--text); font-size:.85rem; font-family:'Syne',sans-serif; outline:none; resize:none; max-height:120px; transition:border .2s; }
-.chat-input:focus { border-color:var(--accent); }
-.chat-send { background:var(--accent); border:none; border-radius:8px; width:38px; height:38px; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; font-size:1rem; transition:opacity .2s; }
-.chat-send:hover { opacity:.85; }
-.chat-sidebar { display:flex; flex-direction:column; gap:1rem; }
-.quick-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:1rem; }
-.quick-card h4 { font-size:.82rem; font-weight:800; margin-bottom:.8rem; color:var(--muted); }
-.quick-btn { display:block; width:100%; text-align:left; background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:.55rem .8rem; font-size:.78rem; color:var(--text); font-family:'Syne',sans-serif; cursor:pointer; margin-bottom:.5rem; transition:border-color .2s; font-weight:700; }
-.quick-btn:last-child { margin-bottom:0; }
-.quick-btn:hover { border-color:var(--accent3); color:var(--accent3); }
- 
-/* PROFILE */
-.profile-grid { display:grid; grid-template-columns:300px 1fr; gap:1.5rem; }
-.profile-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:2rem; text-align:center; }
-.profile-avatar-lg { width:80px; height:80px; border-radius:50%; background:linear-gradient(135deg,var(--accent),var(--accent3)); display:flex; align-items:center; justify-content:center; font-size:1.8rem; font-weight:800; color:#0b0c10; margin:0 auto 1rem; }
-.profile-name { font-size:1.2rem; font-weight:800; margin-bottom:.2rem; }
-.profile-role { font-size:.8rem; color:var(--muted); margin-bottom:1.2rem; }
-.profile-stat { display:flex; justify-content:space-around; padding:1rem 0; border-top:1px solid var(--border); border-bottom:1px solid var(--border); margin-bottom:1.2rem; }
-.ps-item { text-align:center; }
-.ps-val { font-size:1.4rem; font-weight:800; color:var(--accent); }
-.ps-lab { font-size:.7rem; color:var(--muted); }
-.profile-detail { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:1.5rem; }
-.progress-bar { background:var(--surface); border-radius:20px; height:8px; overflow:hidden; margin-top:.4rem; }
-.progress-fill { height:100%; border-radius:20px; background:linear-gradient(90deg,var(--accent3),var(--accent)); }
- 
-/* TABS */
-.tabs { display:flex; gap:.5rem; margin-bottom:1.5rem; border-bottom:1px solid var(--border); }
-.tab { padding:.6rem 1rem; font-size:.85rem; font-weight:700; cursor:pointer; color:var(--muted); border-bottom:2px solid transparent; margin-bottom:-1px; transition:all .2s; }
-.tab.active { color:var(--accent); border-bottom-color:var(--accent); }
-.tab-content { display:none; }
-.tab-content.active { display:block; }
- 
-/* ANNOUNCEMENTS */
-.announce-list { display:flex; flex-direction:column; gap:.8rem; }
-.announce-item { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:1rem 1.2rem; display:flex; align-items:flex-start; gap:1rem; }
-.announce-dot { width:10px; height:10px; border-radius:50%; margin-top:5px; flex-shrink:0; }
-.announce-item h4 { font-size:.88rem; font-weight:700; margin-bottom:.2rem; }
-.announce-item p { font-size:.8rem; color:var(--muted); }
-.announce-item .ts { font-size:.7rem; color:var(--muted); font-family:'Space Mono',monospace; margin-top:.4rem; }
- 
-/* SCROLLBAR */
-::-webkit-scrollbar { width:5px; }
-::-webkit-scrollbar-track { background:transparent; }
-::-webkit-scrollbar-thumb { background:var(--border); border-radius:10px; }
- 
-/* TOAST */
-.toast { position:fixed; bottom:2rem; right:2rem; background:var(--card); border:1px solid var(--accent); border-radius:10px; padding:.9rem 1.4rem; font-size:.85rem; font-weight:700; color:var(--accent); z-index:9999; opacity:0; transform:translateY(16px); transition:all .3s; pointer-events:none; }
-.toast.show { opacity:1; transform:translateY(0); }
- 
-@media(max-width:900px) {
-  .stats-row { grid-template-columns:1fr 1fr; }
-  .chat-wrap { grid-template-columns:1fr; }
-  .profile-grid { grid-template-columns:1fr; }
-  .db-main { margin-left:0; }
+.sidebar-logo{padding:1.4rem 1.2rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.sidebar-logo .logo-text{font-size:1rem;}
+.sidebar-back-label{background:none;border:none;color:var(--muted);font-size:.78rem;cursor:pointer;font-family:'Space Mono',monospace;transition:color .2s;}
+.sidebar-back-label:hover{color:var(--accent2);}
+.sidebar-nav{flex:1;padding:1rem 0;overflow-y:auto;}
+.nav-section{font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);padding:.8rem 1.2rem .4rem;font-family:'Space Mono',monospace;}
+
+/* Radio-based navigation */
+.nav-item-label{
+  display:flex;align-items:center;gap:10px;padding:.65rem 1.2rem;
+  cursor:pointer;transition:background .15s,color .15s;font-size:.88rem;font-weight:700;
+  color:var(--muted);border-left:3px solid transparent;
 }
-@media(max-width:640px) {
-  .site-nav { padding:1rem 1.5rem; }
-  .site-nav ul { gap:1rem; }
-  .section { padding:4rem 1.5rem; }
-  .site-footer { padding:2rem 1.5rem; flex-direction:column; text-align:center; }
+.nav-item-label:hover{background:rgba(255,255,255,.04);color:var(--text);}
+.nav-item-label .icon{font-size:16px;width:20px;text-align:center;}
+
+/* Highlight active nav */
+#nav-dashboard:checked ~ #view-dashboard .nav-label-dashboard,
+#nav-students:checked ~ #view-dashboard .nav-label-students,
+#nav-courses:checked ~ #view-dashboard .nav-label-courses,
+#nav-resources:checked ~ #view-dashboard .nav-label-resources,
+#nav-videos:checked ~ #view-dashboard .nav-label-videos,
+#nav-chatbot:checked ~ #view-dashboard .nav-label-chatbot,
+#nav-profile:checked ~ #view-dashboard .nav-label-profile {
+  background:rgba(247,201,72,.07);color:var(--accent);border-left-color:var(--accent);
+}
+
+.sidebar-footer{padding:1rem 1.2rem;border-top:1px solid var(--border);font-size:.72rem;color:var(--muted);font-family:'Space Mono',monospace;}
+
+.db-main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh;}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:.9rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:40;}
+.topbar-title{font-size:1rem;font-weight:800;letter-spacing:-.5px;}
+.topbar-right{display:flex;align-items:center;gap:1rem;}
+.topbar-search{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:.45rem .9rem;font-size:.82rem;color:var(--text);font-family:'Syne',sans-serif;width:200px;outline:none;transition:border .2s;}
+.topbar-search:focus{border-color:var(--accent);}
+.topbar-search::placeholder{color:var(--muted);}
+.db-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:800;color:#0b0c10;cursor:pointer;}
+.db-content{padding:2rem;flex:1;}
+
+/* ═══════════════════════════
+   PAGES (radio-controlled)
+═══════════════════════════ */
+.page{display:none;}
+
+#nav-dashboard:checked ~ #view-dashboard #page-dashboard { display: block; }
+#nav-students:checked ~ #view-dashboard #page-students { display: block; }
+#nav-courses:checked ~ #view-dashboard #page-courses { display: block; }
+#nav-resources:checked ~ #view-dashboard #page-resources { display: block; }
+#nav-videos:checked ~ #view-dashboard #page-videos { display: block; }
+#nav-chatbot:checked ~ #view-dashboard #page-chatbot { display: block; }
+#nav-profile:checked ~ #view-dashboard #page-profile { display: block; }
+/* Default: dashboard visible */
+#view-dashboard #page-dashboard { display: block; }
+#nav-students:checked ~ #view-dashboard #page-dashboard,
+#nav-courses:checked ~ #view-dashboard #page-dashboard,
+#nav-resources:checked ~ #view-dashboard #page-dashboard,
+#nav-videos:checked ~ #view-dashboard #page-dashboard,
+#nav-chatbot:checked ~ #view-dashboard #page-dashboard,
+#nav-profile:checked ~ #view-dashboard #page-dashboard { display: none; }
+
+/* Topbar title switching */
+.topbar-title::after { content: 'Dashboard'; }
+#nav-students:checked ~ #view-dashboard .topbar-title::after { content: 'Students'; }
+#nav-courses:checked ~ #view-dashboard .topbar-title::after { content: 'Courses'; }
+#nav-resources:checked ~ #view-dashboard .topbar-title::after { content: 'Resources'; }
+#nav-videos:checked ~ #view-dashboard .topbar-title::after { content: 'Video Lessons'; }
+#nav-chatbot:checked ~ #view-dashboard .topbar-title::after { content: 'AI Chatbot'; }
+#nav-profile:checked ~ #view-dashboard .topbar-title::after { content: 'Profile'; }
+
+/* ═══════════════════════════
+   STATS
+═══════════════════════════ */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem;}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.2rem;position:relative;overflow:hidden;}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.stat-card.s1::before{background:var(--accent);}
+.stat-card.s2::before{background:var(--accent3);}
+.stat-card.s3::before{background:var(--accent2);}
+.stat-card.s4::before{background:var(--accent4);}
+.stat-label{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-family:'Space Mono',monospace;margin-bottom:.5rem;}
+.stat-val{font-size:2rem;font-weight:800;letter-spacing:-1px;margin-bottom:.2rem;}
+.stat-sub{font-size:.75rem;color:var(--muted);}
+
+.sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem;}
+.sec-head h2{font-size:1.1rem;font-weight:800;letter-spacing:-.5px;}
+.btn{background:transparent;border:1px solid var(--border);color:var(--text);padding:.45rem 1rem;border-radius:8px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;transition:all .2s;text-decoration:none;display:inline-block;}
+.btn:hover{border-color:var(--accent);color:var(--accent);}
+.btn-accent{background:var(--accent);border-color:var(--accent);color:#0b0c10;}
+.btn-accent:hover{opacity:.85;color:#0b0c10;}
+
+/* ═══════════════════════════
+   TABLE
+═══════════════════════════ */
+.table-wrap{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+table{width:100%;border-collapse:collapse;font-size:.85rem;}
+thead th{padding:.9rem 1.2rem;text-align:left;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-family:'Space Mono',monospace;border-bottom:1px solid var(--border);background:var(--card2);}
+tbody tr{border-bottom:1px solid var(--border);transition:background .15s;}
+tbody tr:last-child{border-bottom:none;}
+tbody tr:hover{background:rgba(255,255,255,.03);}
+tbody td{padding:.85rem 1.2rem;color:var(--text);}
+.badge{display:inline-block;padding:.2rem .65rem;border-radius:20px;font-size:.72rem;font-weight:700;font-family:'Space Mono',monospace;}
+.badge-green{background:rgba(108,247,197,.12);color:var(--accent3);}
+.badge-yellow{background:rgba(247,201,72,.12);color:var(--accent);}
+.badge-red{background:rgba(255,107,107,.12);color:var(--accent2);}
+.badge-blue{background:rgba(124,159,255,.12);color:var(--accent4);}
+.avatar-sm{width:30px;height:30px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:.62rem;font-weight:800;color:#0b0c10;margin-right:8px;flex-shrink:0;vertical-align:middle;}
+.progress-bar{background:var(--surface);border-radius:20px;height:8px;overflow:hidden;display:inline-block;width:80px;vertical-align:middle;}
+.progress-fill{height:100%;border-radius:20px;background:linear-gradient(90deg,var(--accent3),var(--accent));}
+
+/* ═══════════════════════════
+   ANNOUNCEMENTS
+═══════════════════════════ */
+.announce-list{display:flex;flex-direction:column;gap:.8rem;}
+.announce-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1rem 1.2rem;display:flex;align-items:flex-start;gap:1rem;}
+.announce-dot{width:10px;height:10px;border-radius:50%;margin-top:5px;flex-shrink:0;}
+.announce-item h4{font-size:.88rem;font-weight:700;margin-bottom:.2rem;}
+.announce-item p{font-size:.8rem;color:var(--muted);}
+.announce-item .ts{font-size:.7rem;color:var(--muted);font-family:'Space Mono',monospace;margin-top:.4rem;}
+
+/* ═══════════════════════════
+   RESOURCES / COURSES
+═══════════════════════════ */
+.resources-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.2rem;}
+.res-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;text-decoration:none;color:var(--text);display:block;transition:transform .2s,border-color .2s;}
+.res-card:hover{transform:translateY(-4px);border-color:var(--accent);}
+.res-thumb{height:140px;display:flex;align-items:center;justify-content:center;font-size:2.5rem;position:relative;}
+.res-body{padding:1rem;}
+.res-tag{font-family:'Space Mono',monospace;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.4rem;}
+.res-title{font-size:.95rem;font-weight:700;margin-bottom:.3rem;}
+.res-desc{font-size:.8rem;color:var(--muted);line-height:1.5;}
+.res-link{display:inline-flex;align-items:center;gap:.3rem;margin-top:.7rem;font-size:.78rem;font-weight:700;color:var(--accent);}
+
+/* ═══════════════════════════
+   CSS-ONLY TABS (radio)
+═══════════════════════════ */
+.tabs{display:flex;gap:.5rem;margin-bottom:1.5rem;border-bottom:1px solid var(--border);}
+.tab-label{
+  padding:.6rem 1rem;font-size:.85rem;font-weight:700;cursor:pointer;
+  color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .2s;
+}
+.tab-label:hover{color:var(--text);}
+.tab-pane{display:none;}
+
+/* Courses tabs */
+#ctab-all:checked ~ .courses-tab-wrap #cpane-all { display: block; }
+#ctab-java:checked ~ .courses-tab-wrap #cpane-java { display: block; }
+#ctab-python:checked ~ .courses-tab-wrap #cpane-python { display: block; }
+#ctab-web:checked ~ .courses-tab-wrap #cpane-web { display: block; }
+#ctab-other:checked ~ .courses-tab-wrap #cpane-other { display: block; }
+#ctab-all:checked ~ .courses-tabs .ctab-all,
+#ctab-java:checked ~ .courses-tabs .ctab-java,
+#ctab-python:checked ~ .courses-tabs .ctab-python,
+#ctab-web:checked ~ .courses-tabs .ctab-web,
+#ctab-other:checked ~ .courses-tabs .ctab-other { color:var(--accent);border-bottom-color:var(--accent); }
+/* default */
+#view-dashboard #cpane-all { display: block; }
+#ctab-java:checked ~ .courses-tab-wrap #cpane-all,
+#ctab-python:checked ~ .courses-tab-wrap #cpane-all,
+#ctab-web:checked ~ .courses-tab-wrap #cpane-all,
+#ctab-other:checked ~ .courses-tab-wrap #cpane-all { display: none; }
+
+/* Resources tabs */
+#rtab-all:checked ~ .res-tab-wrap #rpane-all { display: block; }
+#rtab-docs:checked ~ .res-tab-wrap #rpane-docs { display: block; }
+#rtab-practice:checked ~ .res-tab-wrap #rpane-practice { display: block; }
+#rtab-tools:checked ~ .res-tab-wrap #rpane-tools { display: block; }
+#rtab-all:checked ~ .res-tabs .rtab-all,
+#rtab-docs:checked ~ .res-tabs .rtab-label-docs,
+#rtab-practice:checked ~ .res-tabs .rtab-label-practice,
+#rtab-tools:checked ~ .res-tabs .rtab-label-tools { color:var(--accent);border-bottom-color:var(--accent); }
+#view-dashboard #rpane-all { display: block; }
+#rtab-docs:checked ~ .res-tab-wrap #rpane-all,
+#rtab-practice:checked ~ .res-tab-wrap #rpane-all,
+#rtab-tools:checked ~ .res-tab-wrap #rpane-all { display: none; }
+
+/* ═══════════════════════════
+   CHATBOT (static)
+═══════════════════════════ */
+.chat-wrap{display:grid;grid-template-columns:1fr 340px;gap:1.5rem;height:calc(100vh - 160px);}
+.chat-main{background:var(--card);border:1px solid var(--border);border-radius:12px;display:flex;flex-direction:column;overflow:hidden;}
+.chat-header{padding:1rem 1.2rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.chat-ai-dot{width:10px;height:10px;border-radius:50%;background:var(--accent3);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+.chat-header h3{font-size:.9rem;font-weight:800;}
+.chat-header span{font-size:.75rem;color:var(--accent3);}
+.chat-msgs{flex:1;overflow-y:auto;padding:1.2rem;display:flex;flex-direction:column;gap:1rem;}
+.msg{max-width:80%;display:flex;flex-direction:column;gap:.3rem;}
+.msg.ai{align-self:flex-start;align-items:flex-start;}
+.msg-bubble{padding:.75rem 1rem;border-radius:12px;font-size:.85rem;line-height:1.6;}
+.msg.ai .msg-bubble{background:var(--card2);border:1px solid var(--border);border-bottom-left-radius:4px;}
+.msg-time{font-size:.68rem;color:var(--muted);font-family:'Space Mono',monospace;}
+.chat-input-row{padding:1rem;border-top:1px solid var(--border);display:flex;gap:.7rem;align-items:flex-end;}
+.chat-input{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.7rem 1rem;color:var(--text);font-size:.85rem;font-family:'Syne',sans-serif;outline:none;resize:none;max-height:120px;transition:border .2s;}
+.chat-input:focus{border-color:var(--accent);}
+.chat-notice{background:var(--surface);border:1px solid var(--accent);border-radius:8px;padding:.7rem 1rem;font-size:.8rem;color:var(--accent);font-family:'Space Mono',monospace;text-align:center;margin-top:auto;}
+.chat-sidebar{display:flex;flex-direction:column;gap:1rem;}
+.quick-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem;}
+.quick-card h4{font-size:.82rem;font-weight:800;margin-bottom:.8rem;color:var(--muted);}
+
+/* ═══════════════════════════
+   PROFILE
+═══════════════════════════ */
+.profile-grid{display:grid;grid-template-columns:300px 1fr;gap:1.5rem;}
+.profile-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:2rem;text-align:center;}
+.profile-avatar-lg{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent3));display:flex;align-items:center;justify-content:center;font-size:1.8rem;font-weight:800;color:#0b0c10;margin:0 auto 1rem;}
+.profile-name{font-size:1.2rem;font-weight:800;margin-bottom:.2rem;}
+.profile-role{font-size:.8rem;color:var(--muted);margin-bottom:1.2rem;}
+.profile-stat{display:flex;justify-content:space-around;padding:1rem 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:1.2rem;}
+.ps-item{text-align:center;}
+.ps-val{font-size:1.4rem;font-weight:800;color:var(--accent);}
+.ps-lab{font-size:.7rem;color:var(--muted);}
+.profile-detail{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.5rem;}
+
+/* ═══════════════════════════
+   VIDEO MODAL (CSS-only)
+═══════════════════════════ */
+.video-modal-wrap{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:300;align-items:center;justify-content:center;}
+.video-modal-wrap:target{display:flex;}
+.video-modal{background:var(--card);border-radius:16px;overflow:hidden;width:800px;max-width:95vw;}
+.video-modal iframe{width:100%;aspect-ratio:16/9;border:none;display:block;}
+.video-modal-head{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.2rem;}
+.video-modal-head h4{font-size:.95rem;font-weight:800;}
+.close-modal{background:none;border:none;color:var(--muted);font-size:1.3rem;cursor:pointer;text-decoration:none;line-height:1;}
+.close-modal:hover{color:var(--text);}
+
+/* scrollbar */
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:10px;}
+
+/* responsive */
+@media(max-width:900px){
+  .stats-row{grid-template-columns:1fr 1fr;}
+  .chat-wrap{grid-template-columns:1fr;}
+  .profile-grid{grid-template-columns:1fr;}
+  .db-main{margin-left:0;}
+  .sidebar{display:none;}
+}
+@media(max-width:640px){
+  .site-nav{padding:1rem 1.5rem;}
+  .site-nav ul{gap:1rem;}
+  .section{padding:4rem 1.5rem;}
+  .site-footer{padding:2rem 1.5rem;flex-direction:column;text-align:center;}
 }
 </style>
 </head>
 <body>
- 
-<!-- ═══════════════════════════════════════════
-     VIEW 1: LANDING PAGE
-═══════════════════════════════════════════ -->
-<div class="view active" id="view-landing">
- 
+
+<!-- ════════════════════════════════════
+     GLOBAL STATE INPUTS (hidden)
+════════════════════════════════════ -->
+<!-- Dashboard toggle -->
+<input type="checkbox" id="toggle-dash">
+<!-- Login overlay toggle -->
+<input type="checkbox" id="toggle-login">
+<!-- Navigation -->
+<input type="radio" name="nav" id="nav-dashboard" checked>
+<input type="radio" name="nav" id="nav-students">
+<input type="radio" name="nav" id="nav-courses">
+<input type="radio" name="nav" id="nav-resources">
+<input type="radio" name="nav" id="nav-videos">
+<input type="radio" name="nav" id="nav-chatbot">
+<input type="radio" name="nav" id="nav-profile">
+<!-- Courses tabs -->
+<input type="radio" name="ctab" id="ctab-all" checked>
+<input type="radio" name="ctab" id="ctab-java">
+<input type="radio" name="ctab" id="ctab-python">
+<input type="radio" name="ctab" id="ctab-web">
+<input type="radio" name="ctab" id="ctab-other">
+<!-- Resources tabs -->
+<input type="radio" name="rtab" id="rtab-all" checked>
+<input type="radio" name="rtab" id="rtab-docs">
+<input type="radio" name="rtab" id="rtab-practice">
+<input type="radio" name="rtab" id="rtab-tools">
+
+<!-- ════════════════════════════════════
+     VIEW 1: LANDING
+════════════════════════════════════ -->
+<div id="view-landing">
+
   <nav class="site-nav">
-    <div class="logo-text" onclick="scrollToTop()">Code<span>Solve</span></div>
+    <div class="logo-text">Code<span>Solve</span></div>
     <ul>
-      <li><a href="#" onclick="scrollToTop();return false;">Home</a></li>
+      <li><a href="#">Home</a></li>
       <li><a href="#courses-section">Courses</a></li>
       <li><a href="https://developerquiz.org/" target="_blank">Quiz</a></li>
-      <li><a href="#" onclick="openLogin();return false;" class="nav-cta">Login</a></li>
+      <li><label for="toggle-login" class="nav-cta-label">Login</label></li>
     </ul>
   </nav>
- 
+
+  <!-- LOGIN OVERLAY -->
+  <div class="login-overlay">
+    <div class="login-box">
+      <label for="toggle-login" class="login-close-label">✕</label>
+      <h2>Welcome back 👋</h2>
+      <p class="sub">Sign in to access your dashboard</p>
+      <div class="lform-row">
+        <label class="field-label">Email</label>
+        <input type="email" placeholder="you@email.com">
+      </div>
+      <div class="lform-row">
+        <label class="field-label">Password</label>
+        <input type="password" placeholder="••••••••">
+      </div>
+      <!-- "Sign In" actually toggles to dashboard -->
+      <label for="toggle-dash" class="login-submit-label" onclick="">Sign In →</label>
+      <p class="login-hint">Demo: any email + any password works ✦</p>
+    </div>
+  </div>
+
   <section class="hero">
     <p class="eyebrow">✦ Your coding journey starts here</p>
     <h1>Learn to <em>code</em>,<br>one step at a time.</h1>
     <p>CodeSolve brings you the best programming courses, curated by top teachers — covering every topic with clear explanations and notes.</p>
     <div class="hero-btns">
-      <button class="btn-primary" onclick="openLogin()">Start Learning →</button>
+      <label for="toggle-login" class="btn-primary">Start Learning →</label>
       <a href="#courses-section" class="btn-outline">Explore Courses</a>
     </div>
   </section>
- 
+
   <div class="ticker">
     <span class="ticker-inner">
       ✦ JAVA &nbsp;&nbsp;·&nbsp;&nbsp; PYTHON &nbsp;&nbsp;·&nbsp;&nbsp; WEB DEVELOPMENT &nbsp;&nbsp;·&nbsp;&nbsp; DATA STRUCTURES &nbsp;&nbsp;·&nbsp;&nbsp; ALGORITHMS &nbsp;&nbsp;·&nbsp;&nbsp; JAVASCRIPT &nbsp;&nbsp;·&nbsp;&nbsp; C++ &nbsp;&nbsp;·&nbsp;&nbsp; REACT &nbsp;&nbsp;·&nbsp;&nbsp; SQL &nbsp;&nbsp;·&nbsp;&nbsp; GIT &nbsp;&nbsp;·&nbsp;&nbsp;
       ✦ JAVA &nbsp;&nbsp;·&nbsp;&nbsp; PYTHON &nbsp;&nbsp;·&nbsp;&nbsp; WEB DEVELOPMENT &nbsp;&nbsp;·&nbsp;&nbsp; DATA STRUCTURES &nbsp;&nbsp;·&nbsp;&nbsp; ALGORITHMS &nbsp;&nbsp;·&nbsp;&nbsp; JAVASCRIPT &nbsp;&nbsp;·&nbsp;&nbsp; C++ &nbsp;&nbsp;·&nbsp;&nbsp; REACT &nbsp;&nbsp;·&nbsp;&nbsp; SQL &nbsp;&nbsp;·&nbsp;&nbsp; GIT &nbsp;&nbsp;·&nbsp;&nbsp;
     </span>
   </div>
- 
+
   <div class="section" id="courses-section">
     <p class="section-label">// What we offer</p>
     <h2 class="section-title">Featured Courses</h2>
     <div class="courses-grid">
-      <div class="course-card" onclick="openLogin()">
+      <label for="toggle-login" class="course-card">
         <div class="thumb-icon thumb-java">☕</div>
         <div class="card-body">
           <p class="card-tag">Beginner → Advanced</p>
@@ -392,8 +532,8 @@ tbody td { padding:.85rem 1.2rem; color:var(--text); }
           <p class="card-desc">Master Java from the ground up. OOP, data structures, and real-world projects.</p>
           <span class="card-arrow">Watch Series →</span>
         </div>
-      </div>
-      <div class="course-card" onclick="openLogin()">
+      </label>
+      <label for="toggle-login" class="course-card">
         <div class="thumb-icon thumb-python">🐍</div>
         <div class="card-body">
           <p class="card-tag">Beginner → Intermediate</p>
@@ -401,8 +541,8 @@ tbody td { padding:.85rem 1.2rem; color:var(--text); }
           <p class="card-desc">Python made simple. Learn scripting, automation, and the logic behind coding.</p>
           <span class="card-arrow">Watch Now →</span>
         </div>
-      </div>
-      <div class="course-card" onclick="openLogin()">
+      </label>
+      <label for="toggle-login" class="course-card">
         <div class="thumb-icon thumb-web">🌐</div>
         <div class="card-body">
           <p class="card-tag">Beginner → Pro</p>
@@ -410,10 +550,10 @@ tbody td { padding:.85rem 1.2rem; color:var(--text); }
           <p class="card-desc">HTML, CSS, and JavaScript — everything you need to build real websites.</p>
           <span class="card-arrow">Watch Series →</span>
         </div>
-      </div>
+      </label>
     </div>
   </div>
- 
+
   <div class="why-section">
     <div class="section">
       <p class="section-label">// Why CodeSolve</p>
@@ -426,89 +566,84 @@ tbody td { padding:.85rem 1.2rem; color:var(--text); }
       </div>
     </div>
   </div>
- 
+
   <footer class="site-footer">
     <div class="logo-text">Code<span>Solve</span></div>
     <ul>
-      <li><a href="#" onclick="scrollToTop();return false;">Home</a></li>
+      <li><a href="#">Home</a></li>
       <li><a href="#courses-section">Courses</a></li>
       <li><a href="https://www.gmail.com" target="_blank">Contact</a></li>
     </ul>
     <p>#codesolve</p>
   </footer>
-</div>
- 
-<!-- ═══════════════════════════════════════════
-     LOGIN OVERLAY
-═══════════════════════════════════════════ -->
-<div class="login-overlay" id="loginOverlay">
-  <div class="login-box">
-    <button class="login-close" onclick="closeLogin()">✕</button>
-    <h2>Welcome back 👋</h2>
-    <p class="sub">Sign in to access your dashboard</p>
-    <div class="login-tabs">
-      <button class="login-tab active" onclick="setLoginTab(this,'student')">Student</button>
-      <button class="login-tab" onclick="setLoginTab(this,'admin')">Admin</button>
-    </div>
-    <div id="loginForm">
-      <div class="lform-row"><label>Email</label><input type="email" id="loginEmail" placeholder="you@email.com"></div>
-      <div class="lform-row"><label>Password</label><input type="password" id="loginPass" placeholder="••••••••"></div>
-      <button class="login-submit" onclick="doLogin()">Sign In →</button>
-      <p class="login-hint">Demo: any email + any password works ✦</p>
-    </div>
-  </div>
-</div>
- 
-<!-- ═══════════════════════════════════════════
+</div><!-- /view-landing -->
+
+
+<!-- ════════════════════════════════════
      VIEW 2: DASHBOARD
-═══════════════════════════════════════════ -->
-<div class="view" id="view-dashboard">
- 
+════════════════════════════════════ -->
+<div id="view-dashboard">
+
   <!-- SIDEBAR -->
-  <aside class="sidebar" id="sidebar">
+  <aside class="sidebar">
     <div class="sidebar-logo">
       <div class="logo-text">Code<span>Solve</span></div>
-      <button class="sidebar-back" onclick="goHome()" title="Back to site">← Site</button>
+      <label for="toggle-dash" class="sidebar-back-label">← Site</label>
     </div>
     <nav class="sidebar-nav">
       <div class="nav-section">Main</div>
-      <div class="nav-item active" onclick="navigate('dashboard')"><span class="icon">⊞</span> Dashboard</div>
-      <div class="nav-item" onclick="navigate('students')"><span class="icon">◎</span> Students</div>
-      <div class="nav-item" onclick="navigate('courses')"><span class="icon">▣</span> Courses</div>
+      <label for="nav-dashboard" class="nav-item-label nav-label-dashboard"><span class="icon">⊞</span> Dashboard</label>
+      <label for="nav-students" class="nav-item-label nav-label-students"><span class="icon">◎</span> Students</label>
+      <label for="nav-courses" class="nav-item-label nav-label-courses"><span class="icon">▣</span> Courses</label>
       <div class="nav-section">Learn</div>
-      <div class="nav-item" onclick="navigate('resources')"><span class="icon">◈</span> Resources</div>
-      <div class="nav-item" onclick="navigate('videos')"><span class="icon">▶</span> Video Lessons</div>
+      <label for="nav-resources" class="nav-item-label nav-label-resources"><span class="icon">◈</span> Resources</label>
+      <label for="nav-videos" class="nav-item-label nav-label-videos"><span class="icon">▶</span> Video Lessons</label>
       <div class="nav-section">Tools</div>
-      <div class="nav-item" onclick="navigate('chatbot')"><span class="icon">◉</span> AI Chatbot</div>
-      <div class="nav-item" onclick="navigate('profile')"><span class="icon">◌</span> Profile</div>
+      <label for="nav-chatbot" class="nav-item-label nav-label-chatbot"><span class="icon">◉</span> AI Chatbot</label>
+      <label for="nav-profile" class="nav-item-label nav-label-profile"><span class="icon">◌</span> Profile</label>
     </nav>
-    <div class="sidebar-footer" id="sidebarUser">Guest · CodeSolve</div>
+    <div class="sidebar-footer">Admin · CodeSolve</div>
   </aside>
- 
-  <!-- MAIN AREA -->
+
+  <!-- MAIN -->
   <div class="db-main">
     <div class="topbar">
-      <div class="topbar-title" id="page-title">Dashboard</div>
+      <div class="topbar-title"></div>
       <div class="topbar-right">
-        <input class="topbar-search" type="text" placeholder="Search students..." id="globalSearch" oninput="globalSearchFn(this.value)">
-        <div class="db-avatar" id="dbAvatar" title="Profile" onclick="navigate('profile')">AD</div>
+        <input class="topbar-search" type="text" placeholder="Search students...">
+        <label for="nav-profile" class="db-avatar">AD</label>
       </div>
     </div>
- 
+
     <div class="db-content">
- 
-      <!-- DASHBOARD -->
-      <div class="page active" id="page-dashboard">
+
+      <!-- PAGE: DASHBOARD -->
+      <div class="page" id="page-dashboard">
         <div class="stats-row">
-          <div class="stat-card s1"><div class="stat-label">Total Students</div><div class="stat-val" id="statTotal">0</div><div class="stat-sub">Registered learners</div></div>
-          <div class="stat-card s2"><div class="stat-label">Active</div><div class="stat-val" id="statActive">0</div><div class="stat-sub">Currently enrolled</div></div>
-          <div class="stat-card s3"><div class="stat-label">Completed</div><div class="stat-val" id="statCompleted">0</div><div class="stat-sub">Finished a course</div></div>
+          <div class="stat-card s1"><div class="stat-label">Total Students</div><div class="stat-val">8</div><div class="stat-sub">Registered learners</div></div>
+          <div class="stat-card s2"><div class="stat-label">Active</div><div class="stat-val">5</div><div class="stat-sub">Currently enrolled</div></div>
+          <div class="stat-card s3"><div class="stat-label">Completed</div><div class="stat-val">2</div><div class="stat-sub">Finished a course</div></div>
           <div class="stat-card s4"><div class="stat-label">Courses</div><div class="stat-val">9</div><div class="stat-sub">Available</div></div>
         </div>
+
         <div style="display:grid;grid-template-columns:1fr 340px;gap:1.5rem;margin-bottom:2rem;">
           <div>
-            <div class="sec-head"><h2>Recent Students</h2><button class="btn" onclick="navigate('students')">View All →</button></div>
-            <div class="table-wrap"><table><thead><tr><th>Student</th><th>Course</th><th>Status</th><th>Progress</th></tr></thead><tbody id="recentStudents"></tbody></table></div>
+            <div class="sec-head">
+              <h2>Recent Students</h2>
+              <label for="nav-students" class="btn" style="cursor:pointer">View All →</label>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Student</th><th>Course</th><th>Status</th><th>Progress</th></tr></thead>
+                <tbody>
+                  <tr><td><span class="avatar-sm" style="background:#ffaa5c">AN</span>Arjun Nair</td><td><span class="badge badge-yellow">C++</span></td><td><span class="badge badge-green">Active</span></td><td><div class="progress-bar"><div class="progress-fill" style="width:80%"></div></div> <span style="font-size:.75rem;color:var(--muted)">80%</span></td></tr>
+                  <tr><td><span class="avatar-sm" style="background:#6cf7c5">DB</span>Dev Bhatia</td><td><span class="badge badge-yellow">Python</span></td><td><span class="badge badge-green">Active</span></td><td><div class="progress-bar"><div class="progress-fill" style="width:35%"></div></div> <span style="font-size:.75rem;color:var(--muted)">35%</span></td></tr>
+                  <tr><td><span class="avatar-sm" style="background:#f7c948">PR</span>Pooja Rao</td><td><span class="badge badge-yellow">Java</span></td><td><span class="badge badge-blue">Completed</span></td><td><div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div> <span style="font-size:.75rem;color:var(--muted)">100%</span></td></tr>
+                  <tr><td><span class="avatar-sm" style="background:#d48cff">SP</span>Sneha Patel</td><td><span class="badge badge-yellow">DSA</span></td><td><span class="badge badge-red">Inactive</span></td><td><div class="progress-bar"><div class="progress-fill" style="width:20%"></div></div> <span style="font-size:.75rem;color:var(--muted)">20%</span></td></tr>
+                  <tr><td><span class="avatar-sm" style="background:#7c9fff">KM</span>Karan Mehta</td><td><span class="badge badge-yellow">JavaScript</span></td><td><span class="badge badge-green">Active</span></td><td><div class="progress-bar"><div class="progress-fill" style="width:55%"></div></div> <span style="font-size:.75rem;color:var(--muted)">55%</span></td></tr>
+                </tbody>
+              </table>
+            </div>
           </div>
           <div>
             <div class="sec-head"><h2>Announcements</h2></div>
@@ -519,66 +654,165 @@ tbody td { padding:.85rem 1.2rem; color:var(--text); }
             </div>
           </div>
         </div>
-      </div>
- 
-      <!-- STUDENTS -->
+      </div><!-- /page-dashboard -->
+
+      <!-- PAGE: STUDENTS -->
       <div class="page" id="page-students">
         <div class="sec-head">
           <h2>All Students</h2>
-          <div style="display:flex;gap:.6rem;flex-wrap:wrap;">
-            <select id="filterCourse" onchange="renderStudents()" style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:.45rem .9rem;color:var(--text);font-family:'Syne',sans-serif;font-size:.82rem;outline:none;">
-              <option value="">All Courses</option><option>Java</option><option>Python</option><option>Web Dev</option><option>C++</option><option>JavaScript</option><option>DSA</option>
-            </select>
-            <select id="filterStatus" onchange="renderStudents()" style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:.45rem .9rem;color:var(--text);font-family:'Syne',sans-serif;font-size:.82rem;outline:none;">
-              <option value="">All Status</option><option>Active</option><option>Completed</option><option>Inactive</option>
-            </select>
-            <button class="btn btn-accent" onclick="openAddModal()">+ Add Student</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Student</th><th>Email</th><th>Course</th><th>Status</th><th>Progress</th><th>Joined</th></tr></thead>
+            <tbody>
+              <tr><td><span class="avatar-sm" style="background:#f7c948">PS</span>Priya Sharma</td><td style="color:var(--muted)">priya@email.com</td><td><span class="badge badge-yellow">Java</span></td><td><span class="badge badge-green">Active</span></td><td><div class="progress-bar"><div class="progress-fill" style="width:68%"></div></div> <span style="font-size:.75rem;color:var(--muted)">68%</span></td><td style="color:var(--muted);font-size:.8rem">2024-01-10</td></tr>
+              <tr><td><span class="avatar-sm" style="background:#6cf7c5">RV</span>Rahul Verma</td><td style="color:var(--muted)">rahul@email.com</td><td><span class="badge badge-yellow">Python</span></td><td><span class="badge badge-blue">Completed</span></td><td><div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div> <span style="font-size:.75rem;color:var(--muted)">100%</span></td><td style="color:var(--muted);font-size:.8rem">2024-01-15</td></tr>
+              <tr><td><span class="avatar-sm" style="background:#ff6b6b">AS</span>Anjali Singh</td><td style="color:var(--muted)">anjali@email.com</td><td><span class="badge badge-yellow">Web Dev</span></td><td><span class="badge badge-green">Active</span></td><td><div class="progress-bar"><div class="progress-fill" style="width:42%"></div></div> <span style="font-size:.75rem;color:var(--muted)">42%</span></td><td style="color:var(--muted);font-size:.8rem">2024-02-01</td></tr>
+              <tr><td><span class="avatar-sm" style="background:#7c9fff">KM</span>Karan Mehta</td><td style="color:var(--muted)">karan@email.com</td><td><span class="badge badge-yellow">JavaScript</span></td><td><span class="badge badge-green">Active</span></td><td><div class="progress-bar"><div class="progress-fill" style="width:55%"></div></div> <span style="font-size:.75rem;color:var(--muted)">55%</span></td><td style="color:var(--muted);font-size:.8rem">2024-02-10</td></tr>
+              <tr><td><span class="avatar-sm" style="background:#d48cff">SP</span>Sneha Patel</td><td style="color:var(--muted)">sneha@email.com</td><td><span class="badge badge-yellow">DSA</span></td><td><span class="badge badge-red">Inactive</span></td><td><div class="progress-bar"><div class="progress-fill" style="width:20%"></div></div> <span style="font-size:.75rem;color:var(--muted)">20%</span></td><td style="color:var(--muted);font-size:.8rem">2024-02-20</td></tr>
+              <tr><td><span class="avatar-sm" style="background:#ffaa5c">AN</span>Arjun Nair</td><td style="color:var(--muted)">arjun@email.com</td><td><span class="badge badge-yellow">C++</span></td><td><span class="badge badge-green">Active</span></td><td><div class="progress-bar"><div class="progress-fill" style="width:80%"></div></div> <span style="font-size:.75rem;color:var(--muted)">80%</span></td><td style="color:var(--muted);font-size:.8rem">2024-03-01</td></tr>
+              <tr><td><span class="avatar-sm" style="background:#f7c948">PR</span>Pooja Rao</td><td style="color:var(--muted)">pooja@email.com</td><td><span class="badge badge-yellow">Java</span></td><td><span class="badge badge-blue">Completed</span></td><td><div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div> <span style="font-size:.75rem;color:var(--muted)">100%</span></td><td style="color:var(--muted);font-size:.8rem">2024-03-05</td></tr>
+              <tr><td><span class="avatar-sm" style="background:#6cf7c5">DB</span>Dev Bhatia</td><td style="color:var(--muted)">dev@email.com</td><td><span class="badge badge-yellow">Python</span></td><td><span class="badge badge-green">Active</span></td><td><div class="progress-bar"><div class="progress-fill" style="width:35%"></div></div> <span style="font-size:.75rem;color:var(--muted)">35%</span></td><td style="color:var(--muted);font-size:.8rem">2024-03-12</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="font-size:.78rem;color:var(--muted);margin-top:1rem;font-family:'Space Mono',monospace;">Note: Add/Edit/Delete requires JavaScript. This is a static view.</p>
+      </div><!-- /page-students -->
+
+      <!-- PAGE: COURSES (tabbed) -->
+      <div class="page" id="page-courses">
+        <div class="courses-tabs tabs">
+          <label for="ctab-all" class="tab-label ctab-all">All</label>
+          <label for="ctab-java" class="tab-label ctab-java">Java</label>
+          <label for="ctab-python" class="tab-label ctab-python">Python</label>
+          <label for="ctab-web" class="tab-label ctab-web">Web &amp; JS</label>
+          <label for="ctab-other" class="tab-label ctab-other">C++ / DSA</label>
+        </div>
+        <div class="courses-tab-wrap">
+          <!-- ALL -->
+          <div class="tab-pane" id="cpane-all">
+            <div class="resources-grid">
+              <a href="https://www.youtube.com/playlist?list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5" target="_blank" class="res-card"><div class="res-thumb" style="background:#1a1c2e;font-size:3rem">☕<div style="position:absolute;bottom:8px;right:10px;background:rgba(0,0,0,.5);border-radius:4px;padding:2px 8px;font-size:.65rem;font-family:'Space Mono',monospace;color:#f7c948">Java</div></div><div class="res-body"><div class="res-tag" style="color:#f7c948">Java</div><div class="res-title">Java Full Course</div><div class="res-desc">Complete Java by Telusko</div><div class="res-link">▶ Open Lesson</div></div></a>
+              <a href="https://www.youtube.com/playlist?list=PL9gnSGHSqcnr_DxHsP7AW9ftq0AtAyYqJ" target="_blank" class="res-card"><div class="res-thumb" style="background:#1e1a2e;font-size:3rem">☕<div style="position:absolute;bottom:8px;right:10px;background:rgba(0,0,0,.5);border-radius:4px;padding:2px 8px;font-size:.65rem;font-family:'Space Mono',monospace;color:#f7c948">Java</div></div><div class="res-body"><div class="res-tag" style="color:#f7c948">Java</div><div class="res-title">Java + DSA Bootcamp</div><div class="res-desc">Java &amp; DSA by Kunal Kushwaha</div><div class="res-link">▶ Open Lesson</div></div></a>
+              <a href="https://www.youtube.com/playlist?list=PLu0W_9lII9agS67Uits0UnJyrYiXhDS6q" target="_blank" class="res-card"><div class="res-thumb" style="background:#1a2e1c;font-size:3rem">🐍<div style="position:absolute;bottom:8px;right:10px;background:rgba(0,0,0,.5);border-radius:4px;padding:2px 8px;font-size:.65rem;font-family:'Space Mono',monospace;color:#6cf7c5">Python</div></div><div class="res-body"><div class="res-tag" style="color:#6cf7c5">Python</div><div class="res-title">Python Full Course</div><div class="res-desc">Python by CodeWithHarry</div><div class="res-link">▶ Open Lesson</div></div></a>
+              <a href="https://www.youtube.com/playlist?list=PLsyeobzWxl7poL9JTVyndKe62ieoN-MZ3" target="_blank" class="res-card"><div class="res-thumb" style="background:#1e2e1a;font-size:3rem">🐍<div style="position:absolute;bottom:8px;right:10px;background:rgba(0,0,0,.5);border-radius:4px;padding:2px 8px;font-size:.65rem;font-family:'Space Mono',monospace;color:#6cf7c5">Python</div></div><div class="res-body"><div class="res-tag" style="color:#6cf7c5">Python</div><div class="res-title">Python by Telusko</div><div class="res-desc">Python for absolute beginners</div><div class="res-link">▶ Open Lesson</div></div></a>
+              <a href="https://www.youtube.com/playlist?list=PLDzeHZWIZsTo0wSBcg4-NMIbC0L8evLrD" target="_blank" class="res-card"><div class="res-thumb" style="background:#2e1a1a;font-size:3rem">🌐<div style="position:absolute;bottom:8px;right:10px;background:rgba(0,0,0,.5);border-radius:4px;padding:2px 8px;font-size:.65rem;font-family:'Space Mono',monospace;color:#ff6b6b">Web Dev</div></div><div class="res-body"><div class="res-tag" style="color:#ff6b6b">Web Dev</div><div class="res-title">Web Dev Bootcamp</div><div class="res-desc">HTML, CSS, JS complete guide</div><div class="res-link">▶ Open Lesson</div></div></a>
+              <a href="https://www.youtube.com/playlist?list=PLlasXeu85E9cQ32gLCvAvr9vNaUccPVNP" target="_blank" class="res-card"><div class="res-thumb" style="background:#2e2a1a;font-size:3rem">⚡<div style="position:absolute;bottom:8px;right:10px;background:rgba(0,0,0,.5);border-radius:4px;padding:2px 8px;font-size:.65rem;font-family:'Space Mono',monospace;color:#7c9fff">JavaScript</div></div><div class="res-body"><div class="res-tag" style="color:#7c9fff">JavaScript</div><div class="res-title">JavaScript Full Course</div><div class="res-desc">Namaste JavaScript series</div><div class="res-link">▶ Open Lesson</div></div></a>
+              <a href="https://www.youtube.com/playlist?list=PLu71SKxNbfoDqgPchmvIsL4hTnJIrtige" target="_blank" class="res-card"><div class="res-thumb" style="background:#1a2a2e;font-size:3rem">⚛<div style="position:absolute;bottom:8px;right:10px;background:rgba(0,0,0,.5);border-radius:4px;padding:2px 8px;font-size:.65rem;font-family:'Space Mono',monospace;color:#7c9fff">JavaScript</div></div><div class="res-body"><div class="res-tag" style="color:#7c9fff">JavaScript</div><div class="res-title">React JS Course</div><div class="res-desc">React by Hitesh Choudhary</div><div class="res-link">▶ Open Lesson</div></div></a>
+              <a href="https://www.youtube.com/playlist?list=PLu0W_9lII9agpFUAlPFe_VNSlXW5uE0YL" target="_blank" class="res-card"><div class="res-thumb" style="background:#1a1f2e;font-size:3rem">⚙<div style="position:absolute;bottom:8px;right:10px;background:rgba(0,0,0,.5);border-radius:4px;padding:2px 8px;font-size:.65rem;font-family:'Space Mono',monospace;color:#d48cff">C++</div></div><div class="res-body"><div class="res-tag" style="color:#d48cff">C++</div><div class="res-title">C++ Full Course</div><div class="res-desc">C++ by CodeWithHarry</div><div class="res-link">▶ Open Lesson</div></div></a>
+              <a href="https://www.youtube.com/playlist?list=PL9gnSGHSqcnr_DxHsP7AW9ftq0AtAyYqJ" target="_blank" class="res-card"><div class="res-thumb" style="background:#2e1e1a;font-size:3rem">🧩<div style="position:absolute;bottom:8px;right:10px;background:rgba(0,0,0,.5);border-radius:4px;padding:2px 8px;font-size:.65rem;font-family:'Space Mono',monospace;color:#ffaa5c">DSA</div></div><div class="res-body"><div class="res-tag" style="color:#ffaa5c">DSA</div><div class="res-title">DSA in Java</div><div class="res-desc">Data Structures &amp; Algorithms</div><div class="res-link">▶ Open Lesson</div></div></a>
+            </div>
+          </div>
+          <!-- JAVA -->
+          <div class="tab-pane" id="cpane-java">
+            <div class="resources-grid">
+              <a href="https://www.youtube.com/playlist?list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5" target="_blank" class="res-card"><div class="res-thumb" style="background:#1a1c2e;font-size:3rem">☕</div><div class="res-body"><div class="res-tag" style="color:#f7c948">Java</div><div class="res-title">Java Full Course</div><div class="res-desc">Complete Java by Telusko</div><div class="res-link">▶ Open Lesson</div></div></a>
+              <a href="https://www.youtube.com/playlist?list=PL9gnSGHSqcnr_DxHsP7AW9ftq0AtAyYqJ" target="_blank" class="res-card"><div class="res-thumb" style="background:#1e1a2e;font-size:3rem">☕</div><div class="res-body"><div class="res-tag" style="color:#f7c948">Java</div><div class="res-title">Java + DSA Bootcamp</div><div class="res-desc">Java &amp; DSA by Kunal Kushwaha</div><div class="res-link">▶ Open Lesson</div></div></a>
+            </div>
+          </div>
+          <!-- PYTHON -->
+          <div class="tab-pane" id="cpane-python">
+            <div class="resources-grid">
+              <a href="https://www.youtube.com/playlist?list=PLu0W_9lII9agS67Uits0UnJyrYiXhDS6q" target="_blank" class="res-card"><div class="res-thumb" style="background:#1a2e1c;font-size:3rem">🐍</div><div class="res-body"><div class="res-tag" style="color:#6cf7c5">Python</div><div class="res-title">Python Full Course</div><div class="res-desc">Python by CodeWithHarry</div><div class="res-link">▶ Open Lesson</div></div></a>
+              <a href="https://www.youtube.com/playlist?list=PLsyeobzWxl7poL9JTVyndKe62ieoN-MZ3" target="_blank" class="res-card"><div class="res-thumb" style="background:#1e2e1a;font-size:3rem">🐍</div><div class="res-body"><div class="res-tag" style="color:#6cf7c5">Python</div><div class="res-title">Python by Telusko</div><div class="res-desc">Python for absolute beginners</div><div class="res-link">▶ Open Lesson</div></div></a>
+            </div>
+          </div>
+          <!-- WEB -->
+          <div class="tab-pane" id="cpane-web">
+            <div class="resources-grid">
+              <a href="https://www.youtube.com/playlist?list=PLDzeHZWIZsTo0wSBcg4-NMIbC0L8evLrD" target="_blank" class="res-card"><div class="res-thumb" style="background:#2e1a1a;font-size:3rem">🌐</div><div class="res-body"><div class="res-tag" style="color:#ff6b6b">Web Dev</div><div class="res-title">Web Dev Bootcamp</div><div class="res-desc">HTML, CSS, JS complete guide</div><div class="res-link">▶ Open Lesson</div></div></a>
+              <a href="https://www.youtube.com/playlist?list=PLlasXeu85E9cQ32gLCvAvr9vNaUccPVNP" target="_blank" class="res-card"><div class="res-thumb" style="background:#2e2a1a;font-size:3rem">⚡</div><div class="res-body"><div class="res-tag" style="color:#7c9fff">JavaScript</div><div class="res-title">JavaScript Full Course</div><div class="res-desc">Namaste JavaScript series</div><div class="res-link">▶ Open Lesson</div></div></a>
+              <a href="https://www.youtube.com/playlist?list=PLu71SKxNbfoDqgPchmvIsL4hTnJIrtige" target="_blank" class="res-card"><div class="res-thumb" style="background:#1a2a2e;font-size:3rem">⚛</div><div class="res-body"><div class="res-tag" style="color:#7c9fff">React</div><div class="res-title">React JS Course</div><div class="res-desc">React by Hitesh Choudhary</div><div class="res-link">▶ Open Lesson</div></div></a>
+            </div>
+          </div>
+          <!-- OTHER -->
+          <div class="tab-pane" id="cpane-other">
+            <div class="resources-grid">
+              <a href="https://www.youtube.com/playlist?list=PLu0W_9lII9agpFUAlPFe_VNSlXW5uE0YL" target="_blank" class="res-card"><div class="res-thumb" style="background:#1a1f2e;font-size:3rem">⚙</div><div class="res-body"><div class="res-tag" style="color:#d48cff">C++</div><div class="res-title">C++ Full Course</div><div class="res-desc">C++ by CodeWithHarry</div><div class="res-link">▶ Open Lesson</div></div></a>
+              <a href="https://www.youtube.com/playlist?list=PL9gnSGHSqcnr_DxHsP7AW9ftq0AtAyYqJ" target="_blank" class="res-card"><div class="res-thumb" style="background:#2e1e1a;font-size:3rem">🧩</div><div class="res-body"><div class="res-tag" style="color:#ffaa5c">DSA</div><div class="res-title">DSA in Java</div><div class="res-desc">Data Structures &amp; Algorithms</div><div class="res-link">▶ Open Lesson</div></div></a>
+            </div>
           </div>
         </div>
-        <div class="table-wrap"><table>
-          <thead><tr><th>Student</th><th>Email</th><th>Course</th><th>Status</th><th>Progress</th><th>Joined</th><th>Actions</th></tr></thead>
-          <tbody id="studentsTable"></tbody>
-        </table></div>
-      </div>
- 
-      <!-- COURSES -->
-      <div class="page" id="page-courses">
-        <div class="tabs">
-          <div class="tab active" onclick="switchTab(this,'tab-all')">All</div>
-          <div class="tab" onclick="switchTab(this,'tab-java')">Java</div>
-          <div class="tab" onclick="switchTab(this,'tab-python')">Python</div>
-          <div class="tab" onclick="switchTab(this,'tab-web')">Web &amp; JS</div>
-          <div class="tab" onclick="switchTab(this,'tab-other')">C++ / DSA</div>
-        </div>
-        <div class="tab-content active" id="tab-all"><div class="resources-grid" id="allCourses"></div></div>
-        <div class="tab-content" id="tab-java"><div class="resources-grid" id="javaCourses"></div></div>
-        <div class="tab-content" id="tab-python"><div class="resources-grid" id="pythonCourses"></div></div>
-        <div class="tab-content" id="tab-web"><div class="resources-grid" id="webCourses"></div></div>
-        <div class="tab-content" id="tab-other"><div class="resources-grid" id="otherCourses"></div></div>
-      </div>
- 
-      <!-- RESOURCES -->
+      </div><!-- /page-courses -->
+
+      <!-- PAGE: RESOURCES (tabbed) -->
       <div class="page" id="page-resources">
         <div class="sec-head"><h2>Study Resources</h2></div>
-        <div class="tabs">
-          <div class="tab active" onclick="switchTab(this,'res-all')">All</div>
-          <div class="tab" onclick="switchTab(this,'res-docs')">Docs &amp; Websites</div>
-          <div class="tab" onclick="switchTab(this,'res-practice')">Practice</div>
-          <div class="tab" onclick="switchTab(this,'res-tools')">Tools</div>
+        <div class="res-tabs tabs">
+          <label for="rtab-all" class="tab-label rtab-all">All</label>
+          <label for="rtab-docs" class="tab-label rtab-label-docs">Docs &amp; Websites</label>
+          <label for="rtab-practice" class="tab-label rtab-label-practice">Practice</label>
+          <label for="rtab-tools" class="tab-label rtab-label-tools">Tools</label>
         </div>
-        <div class="tab-content active" id="res-all"><div class="resources-grid" id="allResGrid"></div></div>
-        <div class="tab-content" id="res-docs"><div class="resources-grid" id="docsGrid"></div></div>
-        <div class="tab-content" id="res-practice"><div class="resources-grid" id="practiceGrid"></div></div>
-        <div class="tab-content" id="res-tools"><div class="resources-grid" id="toolsGrid"></div></div>
-      </div>
- 
-      <!-- VIDEOS -->
+        <div class="res-tab-wrap">
+          <!-- ALL -->
+          <div class="tab-pane" id="rpane-all">
+            <div class="resources-grid">
+              <a href="https://www.w3schools.com" target="_blank" class="res-card"><div class="res-thumb" style="background:rgba(247,201,72,.08)">📖</div><div class="res-body"><div class="res-tag" style="color:#f7c948">Docs</div><div class="res-title">W3Schools</div><div class="res-desc">Interactive tutorials for HTML, CSS, JS, Python, Java, SQL and 50+ more languages.</div><div class="res-link">→ Visit Site</div></div></a>
+              <a href="https://developer.mozilla.org" target="_blank" class="res-card"><div class="res-thumb" style="background:rgba(124,159,255,.08)">🌐</div><div class="res-body"><div class="res-tag" style="color:#7c9fff">Docs</div><div class="res-title">MDN Web Docs</div><div class="res-desc">The definitive reference for web technologies — HTML, CSS, JS — by Mozilla.</div><div class="res-link">→ Visit Site</div></div></a>
+              <a href="https://www.geeksforgeeks.org" target="_blank" class="res-card"><div class="res-thumb" style="background:rgba(108,247,197,.08)">🧑‍💻</div><div class="res-body"><div class="res-tag" style="color:#6cf7c5">Docs</div><div class="res-title">GeeksForGeeks</div><div class="res-desc">DSA, CS theory, programming languages, and interview preparation.</div><div class="res-link">→ Visit Site</div></div></a>
+              <a href="https://www.javatpoint.com" target="_blank" class="res-card"><div class="res-thumb" style="background:rgba(255,170,92,.08)">☕</div><div class="res-body"><div class="res-tag" style="color:#ffaa5c">Docs</div><div class="res-title">JavaPoint</div><div class="res-desc">Java, Spring, Hibernate and hundreds of tutorials — beginner-friendly.</div><div class="res-link">→ Visit Site</div></div></a>
+              <a href="https://www.tutorialspoint.com" target="_blank" class="res-card"><div class="res-thumb" style="background:rgba(212,140,255,.08)">📚</div><div class="res-body"><div class="res-tag" style="color:#d48cff">Docs</div><div class="res-title">TutorialsPoint</div><div class="res-desc">Free programming tutorials across 500+ technologies with examples.</div><div class="res-link">→ Visit Site</div></div></a>
+              <a href="https://leetcode.com" target="_blank" class="res-card"><div class="res-thumb" style="background:rgba(255,107,107,.08)">💡</div><div class="res-body"><div class="res-tag" style="color:#ff6b6b">Practice</div><div class="res-title">LeetCode</div><div class="res-desc">Practice coding problems and prepare for technical interviews.</div><div class="res-link">→ Visit Site</div></div></a>
+              <a href="https://www.hackerrank.com" target="_blank" class="res-card"><div class="res-thumb" style="background:rgba(108,247,197,.08)">🏆</div><div class="res-body"><div class="res-tag" style="color:#6cf7c5">Practice</div><div class="res-title">HackerRank</div><div class="res-desc">Solve challenges in algorithms, SQL, functional programming and more.</div><div class="res-link">→ Visit Site</div></div></a>
+              <a href="https://www.codechef.com" target="_blank" class="res-card"><div class="res-thumb" style="background:rgba(247,201,72,.08)">🍴</div><div class="res-body"><div class="res-tag" style="color:#f7c948">Practice</div><div class="res-title">CodeChef</div><div class="res-desc">Competitive programming with monthly coding contests and rankings.</div><div class="res-link">→ Visit Site</div></div></a>
+              <a href="https://codeforces.com" target="_blank" class="res-card"><div class="res-thumb" style="background:rgba(124,159,255,.08)">⚔</div><div class="res-body"><div class="res-tag" style="color:#7c9fff">Practice</div><div class="res-title">Codeforces</div><div class="res-desc">High-quality competitive programming problems and live contests.</div><div class="res-link">→ Visit Site</div></div></a>
+              <a href="https://developerquiz.org" target="_blank" class="res-card"><div class="res-thumb" style="background:rgba(212,140,255,.08)">❓</div><div class="res-body"><div class="res-tag" style="color:#d48cff">Practice</div><div class="res-title">Developer Quiz</div><div class="res-desc">Test your developer knowledge with real interview-style questions.</div><div class="res-link">→ Visit Site</div></div></a>
+              <a href="https://code.visualstudio.com" target="_blank" class="res-card"><div class="res-thumb" style="background:rgba(124,159,255,.08)">🛠</div><div class="res-body"><div class="res-tag" style="color:#7c9fff">Tools</div><div class="res-title">VS Code</div><div class="res-desc">The industry-standard free code editor by Microsoft.</div><div class="res-link">→ Visit Site</div></div></a>
+              <a href="https://github.com" target="_blank" class="res-card"><div class="res-thumb" style="background:rgba(232,232,240,.05)">🐙</div><div class="res-body"><div class="res-tag" style="color:#e8e8f0">Tools</div><div class="res-title">GitHub</div><div class="res-desc">Version control, open source collaboration, and project hosting.</div><div class="res-link">→ Visit Site</div></div></a>
+              <a href="https://codepen.io" target="_blank" class="res-card"><div class="res-thumb" style="background:rgba(247,201,72,.08)">✏</div><div class="res-body"><div class="res-tag" style="color:#f7c948">Tools</div><div class="res-title">CodePen</div><div class="res-desc">Online HTML/CSS/JS editor and creative community for front-end.</div><div class="res-link">→ Visit Site</div></div></a>
+              <a href="https://replit.com" target="_blank" class="res-card"><div class="res-thumb" style="background:rgba(108,247,197,.08)">🔁</div><div class="res-body"><div class="res-tag" style="color:#6cf7c5">Tools</div><div class="res-title">Replit</div><div class="res-desc">Browser-based IDE supporting 50+ languages — no installation needed.</div><div class="res-link">→ Visit Site</div></div></a>
+            </div>
+          </div>
+          <!-- DOCS -->
+          <div class="tab-pane" id="rpane-docs">
+            <div class="resources-grid">
+              <a href="https://www.w3schools.com" target="_blank" class="res-card"><div class="res-thumb" style="background:rgba(247,201,72,.08)">📖</div><div class="res-body"><div class="res-tag" style="color:#f7c948">Docs</div><div class="res-title">W3Schools</div><div class="res-desc">Interactive tutorials for HTML, CSS, JS, Python, Java, SQL and 50+ more languages.</div><div class="res-link">→ Visit Site</div></div></a>
+              <a href="https://developer.mozilla.org" target="_blank" class="res-card"><div class="res-thumb" style="background:rgba(124,159,255,.08)">🌐</div><div class="res-body"><div class="res-tag" style="color:#7c9fff">Docs</div><div class="res-title">MDN Web Docs</div><div class="res-desc">The definitive reference for web technologies — HTML, CSS, JS — by Mozilla.</div><div class="res-link">→ Visit Site</div></div></a>
+              <a href="https://www.geeksforgeeks.org" target="_blank" class="res-card"><div class="res-thumb" style="background:rgba(108,247,197,.08)">🧑‍💻</div><div class="res-body"><div class="res-tag" style="color:#6cf7c5">Docs</div><div class="res-title">GeeksForGeeks</div><div class="res-desc">DSA, CS theory, programming languages, and interview preparation.</div><div class="res-link">→ Visit Site</div></div></a>
+              <a href="https://www.javatpoint.com" target="_blank" class="res-card"><div class="res-thumb" style="background:rgba(255,170,92,.08)">☕</div><div class="res-body"><div class="res-tag" style="color:#ffaa5c">Docs</div><div class="res-title">JavaPoint</div><div class="res-desc">Java, Spring, Hibernate and hundreds of tutorials — beginner-friendly.</div><div class="res-link">→ Visit Site</div></div></a>
+              <a href="https://www.tutorialspoint.com" target="_blank" class="res-card"><div class="res-thumb" style="background:rgba(212,140,255,.08)">📚</div><div class="res-body"><div class="res-tag" style="color:#d48cff">Docs</div><div class="res-title">TutorialsPoint</div><div class="res-desc">Free programming tutorials across 500+ technologies with examples.</div><div class="res-link">→ Visit Site</div></div></a>
+            </div>
+          </div>
+          <!-- PRACTICE -->
+          <div class="tab-pane" id="rpane-practice">
+            <div class="resources-grid">
+              <a href="https://leetcode.com" target="_blank" class="res-card"><div class="res-thumb" style="background:rgba(255,107,107,.08)">💡</div><div class="res-body"><div class="res-tag" style="color:#ff6b6b">Practice</div><div class="res-title">LeetCode</div><div class="res-desc">Practice coding problems and prepare for technical interviews.</div><div class="res-link">→ Visit Site</div></div></a>
+              <a href="https://www.hackerrank.com" target="_blank" class="res-card"><div class="res-thumb" style="background:rgba(108,247,197,.08)">🏆</div><div class="res-body"><div class="res-tag" style="color:#6cf7c5">Practice</div><div class="res-title">HackerRank</div><div class="res-desc">Solve challenges in algorithms, SQL, functional programming and more.</div><div class="res-link">→ Visit Site</div></div></a>
+              <a href="https://www.codechef.com" target="_blank" class="res-card"><div class="res-thumb" style="background:rgba(247,201,72,.08)">🍴</div><div class="res-body"><div class="res-tag" style="color:#f7c948">Practice</div><div class="res-title">CodeChef</div><div class="res-desc">Competitive programming with monthly coding contests and rankings.</div><div class="res-link">→ Visit Site</div></div></a>
+              <a href="https://codeforces.com" target="_blank" class="res-card"><div class="res-thumb" style="background:rgba(124,159,255,.08)">⚔</div><div class="res-body"><div class="res-tag" style="color:#7c9fff">Practice</div><div class="res-title">Codeforces</div><div class="res-desc">High-quality competitive programming problems and live contests.</div><div class="res-link">→ Visit Site</div></div></a>
+              <a href="https://developerquiz.org" target="_blank" class="res-card"><div class="res-thumb" style="background:rgba(212,140,255,.08)">❓</div><div class="res-body"><div class="res-tag" style="color:#d48cff">Practice</div><div class="res-title">Developer Quiz</div><div class="res-desc">Test your developer knowledge with real interview-style questions.</div><div class="res-link">→ Visit Site</div></div></a>
+            </div>
+          </div>
+          <!-- TOOLS -->
+          <div class="tab-pane" id="rpane-tools">
+            <div class="resources-grid">
+              <a href="https://code.visualstudio.com" target="_blank" class="res-card"><div class="res-thumb" style="background:rgba(124,159,255,.08)">🛠</div><div class="res-body"><div class="res-tag" style="color:#7c9fff">Tools</div><div class="res-title">VS Code</div><div class="res-desc">The industry-standard free code editor by Microsoft.</div><div class="res-link">→ Visit Site</div></div></a>
+              <a href="https://github.com" target="_blank" class="res-card"><div class="res-thumb" style="background:rgba(232,232,240,.05)">🐙</div><div class="res-body"><div class="res-tag" style="color:#e8e8f0">Tools</div><div class="res-title">GitHub</div><div class="res-desc">Version control, open source collaboration, and project hosting.</div><div class="res-link">→ Visit Site</div></div></a>
+              <a href="https://codepen.io" target="_blank" class="res-card"><div class="res-thumb" style="background:rgba(247,201,72,.08)">✏</div><div class="res-body"><div class="res-tag" style="color:#f7c948">Tools</div><div class="res-title">CodePen</div><div class="res-desc">Online HTML/CSS/JS editor and creative community for front-end.</div><div class="res-link">→ Visit Site</div></div></a>
+              <a href="https://replit.com" target="_blank" class="res-card"><div class="res-thumb" style="background:rgba(108,247,197,.08)">🔁</div><div class="res-body"><div class="res-tag" style="color:#6cf7c5">Tools</div><div class="res-title">Replit</div><div class="res-desc">Browser-based IDE supporting 50+ languages — no installation needed.</div><div class="res-link">→ Visit Site</div></div></a>
+            </div>
+          </div>
+        </div>
+      </div><!-- /page-resources -->
+
+      <!-- PAGE: VIDEOS -->
       <div class="page" id="page-videos">
-        <div class="sec-head"><h2>Video Lessons</h2><span style="font-size:.8rem;color:var(--muted)">Click any card to watch</span></div>
-        <div class="resources-grid" id="videosGrid"></div>
-      </div>
- 
-      <!-- CHATBOT -->
+        <div class="sec-head"><h2>Video Lessons</h2><span style="font-size:.8rem;color:var(--muted)">Click any card to open on YouTube</span></div>
+        <div class="resources-grid">
+          <a href="https://www.youtube.com/playlist?list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5" target="_blank" class="res-card"><div class="res-thumb" style="background:#1a1c2e;font-size:3rem">☕<div style="position:absolute;bottom:8px;right:10px;background:rgba(0,0,0,.5);border-radius:4px;padding:2px 8px;font-size:.65rem;font-family:'Space Mono',monospace;color:#f7c948">Java</div></div><div class="res-body"><div class="res-tag" style="color:#f7c948">Java</div><div class="res-title">Java Full Course</div><div class="res-desc">Complete Java by Telusko</div><div class="res-link">▶ Open Lesson</div></div></a>
+          <a href="https://www.youtube.com/playlist?list=PL9gnSGHSqcnr_DxHsP7AW9ftq0AtAyYqJ" target="_blank" class="res-card"><div class="res-thumb" style="background:#1e1a2e;font-size:3rem">☕<div style="position:absolute;bottom:8px;right:10px;background:rgba(0,0,0,.5);border-radius:4px;padding:2px 8px;font-size:.65rem;font-family:'Space Mono',monospace;color:#f7c948">Java</div></div><div class="res-body"><div class="res-tag" style="color:#f7c948">Java</div><div class="res-title">Java + DSA Bootcamp</div><div class="res-desc">Java &amp; DSA by Kunal Kushwaha</div><div class="res-link">▶ Open Lesson</div></div></a>
+          <a href="https://www.youtube.com/playlist?list=PLu0W_9lII9agS67Uits0UnJyrYiXhDS6q" target="_blank" class="res-card"><div class="res-thumb" style="background:#1a2e1c;font-size:3rem">🐍<div style="position:absolute;bottom:8px;right:10px;background:rgba(0,0,0,.5);border-radius:4px;padding:2px 8px;font-size:.65rem;font-family:'Space Mono',monospace;color:#6cf7c5">Python</div></div><div class="res-body"><div class="res-tag" style="color:#6cf7c5">Python</div><div class="res-title">Python Full Course</div><div class="res-desc">Python by CodeWithHarry</div><div class="res-link">▶ Open Lesson</div></div></a>
+          <a href="https://www.youtube.com/playlist?list=PLsyeobzWxl7poL9JTVyndKe62ieoN-MZ3" target="_blank" class="res-card"><div class="res-thumb" style="background:#1e2e1a;font-size:3rem">🐍<div style="position:absolute;bottom:8px;right:10px;background:rgba(0,0,0,.5);border-radius:4px;padding:2px 8px;font-size:.65rem;font-family:'Space Mono',monospace;color:#6cf7c5">Python</div></div><div class="res-body"><div class="res-tag" style="color:#6cf7c5">Python</div><div class="res-title">Python by Telusko</div><div class="res-desc">Python for absolute beginners</div><div class="res-link">▶ Open Lesson</div></div></a>
+          <a href="https://www.youtube.com/playlist?list=PLDzeHZWIZsTo0wSBcg4-NMIbC0L8evLrD" target="_blank" class="res-card"><div class="res-thumb" style="background:#2e1a1a;font-size:3rem">🌐<div style="position:absolute;bottom:8px;right:10px;background:rgba(0,0,0,.5);border-radius:4px;padding:2px 8px;font-size:.65rem;font-family:'Space Mono',monospace;color:#ff6b6b">Web Dev</div></div><div class="res-body"><div class="res-tag" style="color:#ff6b6b">Web Dev</div><div class="res-title">Web Dev Bootcamp</div><div class="res-desc">HTML, CSS, JS complete guide</div><div class="res-link">▶ Open Lesson</div></div></a>
+          <a href="https://www.youtube.com/playlist?list=PLlasXeu85E9cQ32gLCvAvr9vNaUccPVNP" target="_blank" class="res-card"><div class="res-thumb" style="background:#2e2a1a;font-size:3rem">⚡<div style="position:absolute;bottom:8px;right:10px;background:rgba(0,0,0,.5);border-radius:4px;padding:2px 8px;font-size:.65rem;font-family:'Space Mono',monospace;color:#7c9fff">JS</div></div><div class="res-body"><div class="res-tag" style="color:#7c9fff">JavaScript</div><div class="res-title">JavaScript Full Course</div><div class="res-desc">Namaste JavaScript series</div><div class="res-link">▶ Open Lesson</div></div></a>
+          <a href="https://www.youtube.com/playlist?list=PLu71SKxNbfoDqgPchmvIsL4hTnJIrtige" target="_blank" class="res-card"><div class="res-thumb" style="background:#1a2a2e;font-size:3rem">⚛<div style="position:absolute;bottom:8px;right:10px;background:rgba(0,0,0,.5);border-radius:4px;padding:2px 8px;font-size:.65rem;font-family:'Space Mono',monospace;color:#7c9fff">React</div></div><div class="res-body"><div class="res-tag" style="color:#7c9fff">JavaScript</div><div class="res-title">React JS Course</div><div class="res-desc">React by Hitesh Choudhary</div><div class="res-link">▶ Open Lesson</div></div></a>
+          <a href="https://www.youtube.com/playlist?list=PLu0W_9lII9agpFUAlPFe_VNSlXW5uE0YL" target="_blank" class="res-card"><div class="res-thumb" style="background:#1a1f2e;font-size:3rem">⚙<div style="position:absolute;bottom:8px;right:10px;background:rgba(0,0,0,.5);border-radius:4px;padding:2px 8px;font-size:.65rem;font-family:'Space Mono',monospace;color:#d48cff">C++</div></div><div class="res-body"><div class="res-tag" style="color:#d48cff">C++</div><div class="res-title">C++ Full Course</div><div class="res-desc">C++ by CodeWithHarry</div><div class="res-link">▶ Open Lesson</div></div></a>
+          <a href="https://www.youtube.com/playlist?list=PL9gnSGHSqcnr_DxHsP7AW9ftq0AtAyYqJ" target="_blank" class="res-card"><div class="res-thumb" style="background:#2e1e1a;font-size:3rem">🧩<div style="position:absolute;bottom:8px;right:10px;background:rgba(0,0,0,.5);border-radius:4px;padding:2px 8px;font-size:.65rem;font-family:'Space Mono',monospace;color:#ffaa5c">DSA</div></div><div class="res-body"><div class="res-tag" style="color:#ffaa5c">DSA</div><div class="res-title">DSA in Java</div><div class="res-desc">Data Structures &amp; Algorithms</div><div class="res-link">▶ Open Lesson</div></div></a>
+        </div>
+      </div><!-- /page-videos -->
+
+      <!-- PAGE: CHATBOT (static) -->
       <div class="page" id="page-chatbot">
         <div class="chat-wrap">
           <div class="chat-main">
@@ -586,26 +820,20 @@ tbody td { padding:.85rem 1.2rem; color:var(--text); }
               <div class="chat-ai-dot"></div>
               <div><h3>CodeSolve AI Tutor</h3><span>Powered by Claude · Always online</span></div>
             </div>
-            <div class="chat-msgs" id="chatMsgs">
+            <div class="chat-msgs">
               <div class="msg ai">
                 <div class="msg-bubble">👋 Hi! I'm your AI coding tutor. Ask me anything — Python basics, Java OOP, web dev tips, debugging, or study plans. What are we learning today?</div>
                 <div class="msg-time">Just now</div>
               </div>
             </div>
-            <div class="chat-input-row">
-              <textarea class="chat-input" id="chatInput" placeholder="Ask me anything about coding..." rows="1" onkeydown="handleChatKey(event)"></textarea>
-              <button class="chat-send" onclick="sendChat()">➤</button>
+            <div style="padding:1rem;border-top:1px solid var(--border)">
+              <div class="chat-notice">⚡ Live AI chat requires JavaScript. Open this file with JS enabled, or use the full version to chat with Claude.</div>
             </div>
           </div>
           <div class="chat-sidebar">
             <div class="quick-card">
               <h4>Quick questions</h4>
-              <button class="quick-btn" onclick="quickAsk('What is the difference between Java and Python?')">Java vs Python?</button>
-              <button class="quick-btn" onclick="quickAsk('Explain OOP concepts with simple examples')">OOP concepts</button>
-              <button class="quick-btn" onclick="quickAsk('How do I start learning web development?')">Start web dev</button>
-              <button class="quick-btn" onclick="quickAsk('What are data structures and why are they important?')">Data structures</button>
-              <button class="quick-btn" onclick="quickAsk('Give me a beginner Python exercise to try')">Python exercise</button>
-              <button class="quick-btn" onclick="quickAsk('Explain how a for loop works in Java with an example')">Java for loop</button>
+              <div style="font-size:.8rem;color:var(--muted);line-height:1.7;padding:.4rem 0;">Java vs Python? · OOP concepts · Start web dev · Data structures · Python exercises · Java for loop</div>
             </div>
             <div class="quick-card">
               <h4>Tips</h4>
@@ -613,404 +841,39 @@ tbody td { padding:.85rem 1.2rem; color:var(--text); }
             </div>
           </div>
         </div>
-      </div>
- 
-      <!-- PROFILE -->
+      </div><!-- /page-chatbot -->
+
+      <!-- PAGE: PROFILE -->
       <div class="page" id="page-profile">
         <div class="profile-grid">
           <div class="profile-card">
-            <div class="profile-avatar-lg" id="profAvatar">AD</div>
-            <div class="profile-name" id="profName">Admin User</div>
-            <div class="profile-role" id="profRole">Administrator · CodeSolve</div>
+            <div class="profile-avatar-lg">AD</div>
+            <div class="profile-name">Admin User</div>
+            <div class="profile-role">Administrator · CodeSolve</div>
             <div class="profile-stat">
-              <div class="ps-item"><div class="ps-val" id="ps-students">0</div><div class="ps-lab">Students</div></div>
+              <div class="ps-item"><div class="ps-val">8</div><div class="ps-lab">Students</div></div>
               <div class="ps-item"><div class="ps-val">9</div><div class="ps-lab">Courses</div></div>
               <div class="ps-item"><div class="ps-val">14</div><div class="ps-lab">Resources</div></div>
             </div>
-            <button class="btn btn-accent" style="width:100%;margin-bottom:.7rem" onclick="goHome()">← Back to Site</button>
-            <button class="btn" style="width:100%" onclick="doLogout()">Logout</button>
+            <label for="toggle-dash" class="btn btn-accent" style="width:100%;margin-bottom:.7rem;text-align:center;display:block;cursor:pointer">← Back to Site</label>
           </div>
           <div class="profile-detail">
             <div class="sec-head" style="margin-bottom:1rem;"><h2>Enrollment by Course</h2></div>
-            <div id="courseProgress"></div>
+            <div>
+              <div style="margin-bottom:1rem;"><div style="display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:.4rem;"><span>Java</span><span style="color:var(--muted)">2 students</span></div><div class="progress-bar" style="width:100%;display:block;"><div class="progress-fill" style="width:25%"></div></div></div>
+              <div style="margin-bottom:1rem;"><div style="display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:.4rem;"><span>Python</span><span style="color:var(--muted)">2 students</span></div><div class="progress-bar" style="width:100%;display:block;"><div class="progress-fill" style="width:25%"></div></div></div>
+              <div style="margin-bottom:1rem;"><div style="display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:.4rem;"><span>Web Dev</span><span style="color:var(--muted)">1 student</span></div><div class="progress-bar" style="width:100%;display:block;"><div class="progress-fill" style="width:12.5%"></div></div></div>
+              <div style="margin-bottom:1rem;"><div style="display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:.4rem;"><span>C++</span><span style="color:var(--muted)">1 student</span></div><div class="progress-bar" style="width:100%;display:block;"><div class="progress-fill" style="width:12.5%"></div></div></div>
+              <div style="margin-bottom:1rem;"><div style="display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:.4rem;"><span>JavaScript</span><span style="color:var(--muted)">1 student</span></div><div class="progress-bar" style="width:100%;display:block;"><div class="progress-fill" style="width:12.5%"></div></div></div>
+              <div style="margin-bottom:1rem;"><div style="display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:.4rem;"><span>DSA</span><span style="color:var(--muted)">1 student</span></div><div class="progress-bar" style="width:100%;display:block;"><div class="progress-fill" style="width:12.5%"></div></div></div>
+            </div>
           </div>
         </div>
-      </div>
- 
+      </div><!-- /page-profile -->
+
     </div><!-- /db-content -->
   </div><!-- /db-main -->
 </div><!-- /view-dashboard -->
- 
-<!-- ADD/EDIT STUDENT MODAL -->
-<div class="modal-bg" id="addModal">
-  <div class="modal">
-    <h3 id="modalTitle">Add New Student</h3>
-    <div class="form-2col">
-      <div class="form-row"><label>First Name</label><input id="fName" placeholder="e.g. Anmol"></div>
-      <div class="form-row"><label>Last Name</label><input id="lName" placeholder="e.g. Kumar"></div>
-    </div>
-    <div class="form-row"><label>Email</label><input id="fEmail" type="email" placeholder="student@email.com"></div>
-    <div class="form-2col">
-      <div class="form-row"><label>Course</label>
-        <select id="fCourse"><option>Java</option><option>Python</option><option>Web Dev</option><option>C++</option><option>JavaScript</option><option>DSA</option></select>
-      </div>
-      <div class="form-row"><label>Status</label>
-        <select id="fStatus"><option>Active</option><option>Inactive</option><option>Completed</option></select>
-      </div>
-    </div>
-    <div class="form-row"><label>Progress (%)</label><input id="fProgress" type="number" min="0" max="100" value="0"></div>
-    <div class="modal-btns">
-      <button class="btn" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-accent" onclick="saveStudent()">Save Student</button>
-    </div>
-  </div>
-</div>
- 
-<!-- VIDEO MODAL -->
-<div class="video-modal-bg" id="videoModal">
-  <div class="video-modal">
-    <div class="video-modal-head">
-      <h4 id="videoTitle">Lesson</h4>
-      <button class="close-btn" onclick="closeVideo()">✕</button>
-    </div>
-    <iframe id="videoFrame" src="" allowfullscreen></iframe>
-  </div>
-</div>
- 
-<!-- TOAST -->
-<div class="toast" id="toast"></div>
- 
-<script>
-/* ─── DATA ─── */
-const COLORS = ['#f7c948','#6cf7c5','#ff6b6b','#7c9fff','#d48cff','#ffaa5c'];
-function rc(){return COLORS[Math.floor(Math.random()*COLORS.length)];}
-function initials(n){return n.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);}
-function timeNow(){return new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});}
- 
-let currentUser = {name:'Admin User', role:'Administrator', email:'admin@codesolve.com', initials:'AD'};
- 
-let students = [
-  {id:1,name:'Priya Sharma',email:'priya@email.com',course:'Java',status:'Active',progress:68,joined:'2024-01-10',color:'#f7c948'},
-  {id:2,name:'Rahul Verma',email:'rahul@email.com',course:'Python',status:'Completed',progress:100,joined:'2024-01-15',color:'#6cf7c5'},
-  {id:3,name:'Anjali Singh',email:'anjali@email.com',course:'Web Dev',status:'Active',progress:42,joined:'2024-02-01',color:'#ff6b6b'},
-  {id:4,name:'Karan Mehta',email:'karan@email.com',course:'JavaScript',status:'Active',progress:55,joined:'2024-02-10',color:'#7c9fff'},
-  {id:5,name:'Sneha Patel',email:'sneha@email.com',course:'DSA',status:'Inactive',progress:20,joined:'2024-02-20',color:'#d48cff'},
-  {id:6,name:'Arjun Nair',email:'arjun@email.com',course:'C++',status:'Active',progress:80,joined:'2024-03-01',color:'#ffaa5c'},
-  {id:7,name:'Pooja Rao',email:'pooja@email.com',course:'Java',status:'Completed',progress:100,joined:'2024-03-05',color:'#f7c948'},
-  {id:8,name:'Dev Bhatia',email:'dev@email.com',course:'Python',status:'Active',progress:35,joined:'2024-03-12',color:'#6cf7c5'},
-];
-let editingId = null;
- 
-const videos = [
-  {title:'Java Full Course',sub:'Complete Java by Telusko',embed:'https://www.youtube.com/embed/videoseries?list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5',thumb:'☕',bg:'#1a1c2e',tag:'Java',color:'#f7c948'},
-  {title:'Java + DSA Bootcamp',sub:'Java & DSA by Kunal Kushwaha',embed:'https://www.youtube.com/embed/videoseries?list=PL9gnSGHSqcnr_DxHsP7AW9ftq0AtAyYqJ',thumb:'☕',bg:'#1e1a2e',tag:'Java',color:'#f7c948'},
-  {title:'Python Full Course',sub:'Python by CodeWithHarry',embed:'https://www.youtube.com/embed/videoseries?list=PLu0W_9lII9agS67Uits0UnJyrYiXhDS6q',thumb:'🐍',bg:'#1a2e1c',tag:'Python',color:'#6cf7c5'},
-  {title:'Python by Telusko',sub:'Python for absolute beginners',embed:'https://www.youtube.com/embed/videoseries?list=PLsyeobzWxl7poL9JTVyndKe62ieoN-MZ3',thumb:'🐍',bg:'#1e2e1a',tag:'Python',color:'#6cf7c5'},
-  {title:'Web Dev Bootcamp',sub:'HTML, CSS, JS complete guide',embed:'https://www.youtube.com/embed/videoseries?list=PLDzeHZWIZsTo0wSBcg4-NMIbC0L8evLrD',thumb:'🌐',bg:'#2e1a1a',tag:'Web Dev',color:'#ff6b6b'},
-  {title:'JavaScript Full Course',sub:'Namaste JavaScript series',embed:'https://www.youtube.com/embed/videoseries?list=PLlasXeu85E9cQ32gLCvAvr9vNaUccPVNP',thumb:'⚡',bg:'#2e2a1a',tag:'JavaScript',color:'#7c9fff'},
-  {title:'React JS Course',sub:'React by Hitesh Choudhary',embed:'https://www.youtube.com/embed/videoseries?list=PLu71SKxNbfoDqgPchmvIsL4hTnJIrtige',thumb:'⚛',bg:'#1a2a2e',tag:'JavaScript',color:'#7c9fff'},
-  {title:'C++ Full Course',sub:'C++ by CodeWithHarry',embed:'https://www.youtube.com/embed/videoseries?list=PLu0W_9lII9agpFUAlPFe_VNSlXW5uE0YL',thumb:'⚙',bg:'#1a1f2e',tag:'C++',color:'#d48cff'},
-  {title:'DSA in Java',sub:'Data Structures & Algorithms',embed:'https://www.youtube.com/embed/videoseries?list=PL9gnSGHSqcnr_DxHsP7AW9ftq0AtAyYqJ',thumb:'🧩',bg:'#2e1e1a',tag:'DSA',color:'#ffaa5c'},
-];
- 
-const resources = [
-  {title:'W3Schools',desc:'Interactive tutorials for HTML, CSS, JS, Python, Java, SQL and 50+ more languages.',url:'https://www.w3schools.com',tag:'docs',cat:'Docs',color:'#f7c948',icon:'📖'},
-  {title:'MDN Web Docs',desc:'The definitive reference for web technologies — HTML, CSS, JS — by Mozilla.',url:'https://developer.mozilla.org',tag:'docs',cat:'Docs',color:'#7c9fff',icon:'🌐'},
-  {title:'GeeksForGeeks',desc:'DSA, CS theory, programming languages, and interview preparation.',url:'https://www.geeksforgeeks.org',tag:'docs',cat:'Docs',color:'#6cf7c5',icon:'🧑‍💻'},
-  {title:'JavaPoint',desc:'Java, Spring, Hibernate and hundreds of tutorials — beginner-friendly.',url:'https://www.javatpoint.com',tag:'docs',cat:'Docs',color:'#ffaa5c',icon:'☕'},
-  {title:'TutorialsPoint',desc:'Free programming tutorials across 500+ technologies with examples.',url:'https://www.tutorialspoint.com',tag:'docs',cat:'Docs',color:'#d48cff',icon:'📚'},
-  {title:'LeetCode',desc:'Practice coding problems and prepare for technical interviews.',url:'https://leetcode.com',tag:'practice',cat:'Practice',color:'#ff6b6b',icon:'💡'},
-  {title:'HackerRank',desc:'Solve challenges in algorithms, SQL, functional programming and more.',url:'https://www.hackerrank.com',tag:'practice',cat:'Practice',color:'#6cf7c5',icon:'🏆'},
-  {title:'CodeChef',desc:'Competitive programming with monthly coding contests and rankings.',url:'https://www.codechef.com',tag:'practice',cat:'Practice',color:'#f7c948',icon:'🍴'},
-  {title:'Codeforces',desc:'High-quality competitive programming problems and live contests.',url:'https://codeforces.com',tag:'practice',cat:'Practice',color:'#7c9fff',icon:'⚔'},
-  {title:'Developer Quiz',desc:'Test your developer knowledge with real interview-style questions.',url:'https://developerquiz.org',tag:'practice',cat:'Practice',color:'#d48cff',icon:'❓'},
-  {title:'VS Code',desc:'The industry-standard free code editor by Microsoft.',url:'https://code.visualstudio.com',tag:'tools',cat:'Tools',color:'#7c9fff',icon:'🛠'},
-  {title:'GitHub',desc:'Version control, open source collaboration, and project hosting.',url:'https://github.com',tag:'tools',cat:'Tools',color:'#e8e8f0',icon:'🐙'},
-  {title:'CodePen',desc:'Online HTML/CSS/JS editor and creative community for front-end.',url:'https://codepen.io',tag:'tools',cat:'Tools',color:'#f7c948',icon:'✏'},
-  {title:'Replit',desc:'Browser-based IDE supporting 50+ languages — no installation needed.',url:'https://replit.com',tag:'tools',cat:'Tools',color:'#6cf7c5',icon:'🔁'},
-];
- 
-/* ─── LOGIN ─── */
-let loginTab = 'student';
-function openLogin(){ document.getElementById('loginOverlay').classList.add('open'); }
-function closeLogin(){ document.getElementById('loginOverlay').classList.remove('open'); }
-function setLoginTab(el, t){
-  loginTab = t;
-  document.querySelectorAll('.login-tab').forEach(b=>b.classList.remove('active'));
-  el.classList.add('active');
-}
-function doLogin(){
-  const email = document.getElementById('loginEmail').value.trim();
-  const name = email ? email.split('@')[0] : (loginTab==='admin'?'Admin':'Student');
-  const formatted = name.charAt(0).toUpperCase()+name.slice(1);
-  currentUser = {
-    name: formatted,
-    role: loginTab==='admin' ? 'Administrator' : 'Student',
-    email: email || loginTab+'@codesolve.com',
-    initials: initials(formatted+' User')
-  };
-  closeLogin();
-  enterDashboard();
-}
- 
-/* ─── VIEW SWITCHING ─── */
-function enterDashboard(){
-  document.getElementById('view-landing').classList.remove('active');
-  const db = document.getElementById('view-dashboard');
-  db.classList.add('active');
-  db.style.display='flex';
-  document.getElementById('sidebar').classList.add('open');
-  document.getElementById('sidebarUser').textContent = currentUser.name+' · '+currentUser.role;
-  document.getElementById('dbAvatar').textContent = currentUser.initials;
-  document.getElementById('profName').textContent = currentUser.name;
-  document.getElementById('profRole').textContent = currentUser.role+' · CodeSolve';
-  document.getElementById('profAvatar').textContent = currentUser.initials;
-  document.getElementById('ps-students').textContent = students.length;
-  renderStudents(); renderRecent(); updateStats();
-  showToast('Welcome back, '+currentUser.name+' 👋');
-}
- 
-function goHome(){
-  document.getElementById('view-dashboard').classList.remove('active');
-  document.getElementById('view-dashboard').style.display='none';
-  document.getElementById('view-landing').classList.add('active');
-  window.scrollTo(0,0);
-}
- 
-function doLogout(){ goHome(); showToast('Logged out successfully.'); }
-function scrollToTop(){ window.scrollTo({top:0,behavior:'smooth'}); }
- 
-/* ─── TOAST ─── */
-function showToast(msg){
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'), 3000);
-}
- 
-/* ─── NAVIGATION ─── */
-let currentPage = 'dashboard';
-const pageTitles = {dashboard:'Dashboard',students:'Students',courses:'Courses',resources:'Resources',videos:'Video Lessons',chatbot:'AI Chatbot',profile:'Profile'};
- 
-function navigate(page){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  document.getElementById('page-'+page).classList.add('active');
-  document.querySelector(`[onclick="navigate('${page}')"]`).classList.add('active');
-  document.getElementById('page-title').textContent = pageTitles[page];
-  currentPage = page;
-  if(page==='students') renderStudents();
-  if(page==='videos') renderVideos();
-  if(page==='courses') renderCourses();
-  if(page==='resources') renderResources();
-  if(page==='profile'){ updateStats(); renderCourseProgress(); }
-}
- 
-/* ─── STUDENTS ─── */
-function getStatusBadge(s){
-  if(s==='Active') return '<span class="badge badge-green">Active</span>';
-  if(s==='Completed') return '<span class="badge badge-blue">Completed</span>';
-  return '<span class="badge badge-red">Inactive</span>';
-}
- 
-function renderStudents(search=''){
-  const cf = document.getElementById('filterCourse')?.value||'';
-  const sf = document.getElementById('filterStatus')?.value||'';
-  const q  = search.toLowerCase();
-  const filtered = students.filter(s=>{
-    const mQ = !q||s.name.toLowerCase().includes(q)||s.email.toLowerCase().includes(q)||s.course.toLowerCase().includes(q);
-    return mQ && (!cf||s.course===cf) && (!sf||s.status===sf);
-  });
-  const tbody = document.getElementById('studentsTable');
-  if(!tbody) return;
-  tbody.innerHTML = filtered.map(s=>`
-    <tr>
-      <td><span class="avatar-sm" style="background:${s.color}">${initials(s.name)}</span>${s.name}</td>
-      <td style="color:var(--muted)">${s.email}</td>
-      <td><span class="badge badge-yellow">${s.course}</span></td>
-      <td>${getStatusBadge(s.status)}</td>
-      <td><div style="display:flex;align-items:center;gap:8px;"><div class="progress-bar" style="width:80px;"><div class="progress-fill" style="width:${s.progress}%"></div></div><span style="font-size:.75rem;color:var(--muted)">${s.progress}%</span></div></td>
-      <td style="color:var(--muted);font-size:.8rem">${s.joined}</td>
-      <td>
-        <button class="btn" style="padding:.3rem .7rem;font-size:.72rem;margin-right:4px" onclick="editStudent(${s.id})">Edit</button>
-        <button class="btn" style="padding:.3rem .7rem;font-size:.72rem;color:var(--accent2);border-color:var(--accent2)" onclick="deleteStudent(${s.id})">Del</button>
-      </td>
-    </tr>`).join('');
-  updateStats();
-}
- 
-function renderRecent(){
-  const tbody = document.getElementById('recentStudents');
-  if(!tbody) return;
-  tbody.innerHTML = students.slice(-5).reverse().map(s=>`
-    <tr>
-      <td><span class="avatar-sm" style="background:${s.color}">${initials(s.name)}</span>${s.name}</td>
-      <td><span class="badge badge-yellow">${s.course}</span></td>
-      <td>${getStatusBadge(s.status)}</td>
-      <td><div style="display:flex;align-items:center;gap:8px;"><div class="progress-bar" style="width:60px;"><div class="progress-fill" style="width:${s.progress}%"></div></div><span style="font-size:.75rem;color:var(--muted)">${s.progress}%</span></div></td>
-    </tr>`).join('');
-}
- 
-function updateStats(){
-  document.getElementById('statTotal').textContent = students.length;
-  document.getElementById('statActive').textContent = students.filter(s=>s.status==='Active').length;
-  document.getElementById('statCompleted').textContent = students.filter(s=>s.status==='Completed').length;
-  const ps = document.getElementById('ps-students');
-  if(ps) ps.textContent = students.length;
-}
- 
-function renderCourseProgress(){
-  const el = document.getElementById('courseProgress');
-  if(!el) return;
-  const courses=['Java','Python','Web Dev','C++','JavaScript','DSA'];
-  el.innerHTML = courses.map(c=>{
-    const cnt = students.filter(s=>s.course===c).length;
-    const pct = students.length ? Math.round(cnt/students.length*100) : 0;
-    return `<div style="margin-bottom:1rem;">
-      <div style="display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:.4rem;">
-        <span>${c}</span><span style="color:var(--muted)">${cnt} students</span>
-      </div>
-      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
-    </div>`;
-  }).join('');
-}
- 
-/* ─── STUDENT CRUD ─── */
-function openAddModal(){
-  editingId=null;
-  document.getElementById('modalTitle').textContent='Add New Student';
-  ['fName','fEmail','fProgress'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('lName').value='';
-  document.getElementById('fProgress').value='0';
-  document.getElementById('addModal').classList.add('open');
-}
-function editStudent(id){
-  const s=students.find(x=>x.id===id); if(!s) return;
-  editingId=id;
-  document.getElementById('modalTitle').textContent='Edit Student';
-  const p=s.name.split(' ');
-  document.getElementById('fName').value=p[0]||'';
-  document.getElementById('lName').value=p.slice(1).join(' ')||'';
-  document.getElementById('fEmail').value=s.email;
-  document.getElementById('fCourse').value=s.course;
-  document.getElementById('fStatus').value=s.status;
-  document.getElementById('fProgress').value=s.progress;
-  document.getElementById('addModal').classList.add('open');
-}
-function deleteStudent(id){
-  if(confirm('Remove this student?')){ students=students.filter(s=>s.id!==id); renderStudents(); showToast('Student removed.'); }
-}
-function saveStudent(){
-  const fn=document.getElementById('fName').value.trim();
-  if(!fn){alert('Please enter a name.');return;}
-  const data={name:(fn+' '+document.getElementById('lName').value.trim()).trim(),email:document.getElementById('fEmail').value.trim(),course:document.getElementById('fCourse').value,status:document.getElementById('fStatus').value,progress:parseInt(document.getElementById('fProgress').value)||0};
-  if(editingId){ const i=students.findIndex(s=>s.id===editingId); students[i]={...students[i],...data}; }
-  else { students.push({id:Date.now(),joined:new Date().toISOString().slice(0,10),color:rc(),...data}); }
-  closeModal(); renderStudents(); showToast(editingId?'Student updated!':'Student added!');
-}
-function closeModal(){ document.getElementById('addModal').classList.remove('open'); }
-function globalSearchFn(val){ if(currentPage==='students') renderStudents(val); }
- 
-/* ─── TABS ─── */
-function switchTab(el,target){
-  el.closest('.tabs').querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  document.querySelectorAll('.tab-content').forEach(tc=>{ tc.id===target ? tc.classList.add('active') : tc.classList.remove('active'); });
-}
- 
-/* ─── VIDEOS ─── */
-function videoCard(v){
-  return `<div class="res-card" onclick="openVideo('${v.embed}','${v.title}')" style="cursor:pointer">
-    <div class="res-thumb" style="background:${v.bg};font-size:3rem">${v.thumb}
-      <div style="position:absolute;bottom:8px;right:10px;background:rgba(0,0,0,.5);border-radius:4px;padding:2px 8px;font-size:.65rem;font-family:'Space Mono',monospace;color:${v.color}">${v.tag}</div>
-    </div>
-    <div class="res-body">
-      <div class="res-tag" style="color:${v.color}">${v.tag}</div>
-      <div class="res-title">${v.title}</div>
-      <div class="res-desc">${v.sub}</div>
-      <div class="res-link">▶ Open Lesson</div>
-    </div>
-  </div>`;
-}
- 
-function renderVideos(){
-  const g=document.getElementById('videosGrid'); if(!g) return;
-  g.innerHTML=videos.map(videoCard).join('');
-}
-function renderCourses(){
-  const allC=document.getElementById('allCourses'); if(!allC) return;
-  allC.innerHTML=videos.map(videoCard).join('');
-  document.getElementById('javaCourses').innerHTML=videos.filter(v=>v.tag==='Java').map(videoCard).join('');
-  document.getElementById('pythonCourses').innerHTML=videos.filter(v=>v.tag==='Python').map(videoCard).join('');
-  document.getElementById('webCourses').innerHTML=videos.filter(v=>['Web Dev','JavaScript'].includes(v.tag)).map(videoCard).join('');
-  document.getElementById('otherCourses').innerHTML=videos.filter(v=>['C++','DSA'].includes(v.tag)).map(videoCard).join('');
-}
- 
-function openVideo(src,title){
-  document.getElementById('videoFrame').src=src;
-  document.getElementById('videoTitle').textContent=title;
-  document.getElementById('videoModal').classList.add('open');
-}
-function closeVideo(){ document.getElementById('videoModal').classList.remove('open'); document.getElementById('videoFrame').src=''; }
- 
-/* ─── RESOURCES ─── */
-function renderResources(){
-  const makeCard = r=>`
-    <a href="${r.url}" target="_blank" class="res-card">
-      <div class="res-thumb" style="background:${r.color}18">${r.icon}</div>
-      <div class="res-body">
-        <div class="res-tag" style="color:${r.color}">${r.cat}</div>
-        <div class="res-title">${r.title}</div>
-        <div class="res-desc">${r.desc}</div>
-        <div class="res-link">→ Visit Site</div>
-      </div>
-    </a>`;
-  const all=document.getElementById('allResGrid'); if(!all) return;
-  all.innerHTML=resources.map(makeCard).join('');
-  document.getElementById('docsGrid').innerHTML=resources.filter(r=>r.tag==='docs').map(makeCard).join('');
-  document.getElementById('practiceGrid').innerHTML=resources.filter(r=>r.tag==='practice').map(makeCard).join('');
-  document.getElementById('toolsGrid').innerHTML=resources.filter(r=>r.tag==='tools').map(makeCard).join('');
-}
- 
-/* ─── AI CHATBOT ─── */
-let chatHistory=[];
-async function sendChat(){
-  const input=document.getElementById('chatInput');
-  const text=input.value.trim(); if(!text) return;
-  addMsg(text,'user'); input.value=''; input.style.height='auto';
-  const typing=addMsg('Thinking…','ai',true);
-  chatHistory.push({role:'user',content:text});
-  try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,
-        system:'You are CodeSolve AI, a friendly and knowledgeable coding tutor. Help students learn Java, Python, Web Development, DSA, C++, and JavaScript. Give clear, concise explanations with short code examples when helpful. Be encouraging and beginner-friendly.',
-        messages:chatHistory})
-    });
-    const data=await res.json();
-    const reply=data.content?.map(c=>c.text||'').join('')||'Sorry, I could not get a response.';
-    chatHistory.push({role:'assistant',content:reply});
-    typing.remove(); addMsg(reply,'ai');
-  }catch(e){ typing.remove(); addMsg('Connection error — please try again.','ai'); }
-}
- 
-function addMsg(text,role,isTyping=false){
-  const msgs=document.getElementById('chatMsgs');
-  const div=document.createElement('div');
-  div.className=`msg ${role}`;
-  const safe=text.replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>').replace(/`([^`]+)`/g,'<code style="background:rgba(255,255,255,.1);padding:2px 5px;border-radius:4px;font-family:monospace;font-size:.82em">$1</code>');
-  div.innerHTML=`<div class="msg-bubble">${isTyping?'<span style="opacity:.5">Thinking…</span>':safe}</div><div class="msg-time">${timeNow()}</div>`;
-  msgs.appendChild(div); msgs.scrollTop=msgs.scrollHeight; return div;
-}
-function quickAsk(q){ document.getElementById('chatInput').value=q; sendChat(); }
-function handleChatKey(e){ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendChat();} }
- 
-/* ─── INIT ─── */
-renderRecent(); updateStats();
-// Close video on backdrop click
-document.getElementById('videoModal').parentElement.addEventListener('click',function(e){ if(e.target===this) closeVideo(); });
-document.getElementById('loginOverlay').addEventListener('click',function(e){ if(e.target===this) closeLogin(); });
-document.getElementById('addModal').addEventListener('click',function(e){ if(e.target===this) closeModal(); });
-</script>
+
 </body>
 </html>
